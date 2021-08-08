@@ -22,7 +22,8 @@ class CategoryFactory extends Factory
     public function definition()
     {
         return [
-            //
+            // generation Category data with factory and faker library
+            'name' => $this->faker->name(),
         ];
     }
 }

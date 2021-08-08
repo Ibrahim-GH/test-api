@@ -14,18 +14,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -38,6 +29,7 @@ class CategoryController extends Controller
         //
     }
 
+
     /**
      * Display the specified resource.
      *
@@ -49,16 +41,7 @@ class CategoryController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Category $category)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
@@ -71,6 +54,7 @@ class CategoryController extends Controller
     {
         //
     }
+
 
     /**
      * Remove the specified resource from storage.

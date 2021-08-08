@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Category;
 
 class CategorySeeder extends Seeder
 {
@@ -13,6 +14,9 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        //
+
+        //generation Category data with seeder and function factory
+       \App\Models\Category::factory(5)->create();
+
     }
 }
