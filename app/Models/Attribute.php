@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Attribute extends Model
 {
     use HasFactory;
+
+    protected $table = 'attributes';
+
+    protected $fillable = [
+        'name','category_id',
+    ];
+
+    protected $hidden = [];
 }

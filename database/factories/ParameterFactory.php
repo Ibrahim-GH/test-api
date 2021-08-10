@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Attribute;
+use App\Models\Parameter;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class AttributeFactory extends Factory
+class ParameterFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Attribute::class;
+    protected $model = Parameter::class;
 
     /**
      * Define the model's default state.
@@ -22,8 +22,7 @@ class AttributeFactory extends Factory
     public function definition()
     {
         return [
-            // generation Attribute data with factory and faker library
-            'name' => $this->faker->name(),
+            //
         ];
     }
 }

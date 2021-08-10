@@ -13,6 +13,8 @@ class AttributeSeeder extends Seeder
      */
     public function run()
     {
-        //
+        //generation Attribute data with seeder
+        \App\Models\Attribute::factory(5)->create();
+
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Http\Resources\CategoryAttributesResource;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -19,8 +20,8 @@ class CategoryController extends Controller
     public function index()
     {
         //get retrieve all Categories records
-        $cats = Category::paginate(10);
-        return CategoryResource::collection($cats);
+        $categories = Category::paginate(10);
+        return CategoryResource::collection($categories);
 
     }
 
@@ -52,9 +53,30 @@ class CategoryController extends Controller
     public function show($id)
     {
         //get specific Category record by id
-        $cat = Category::findOrfail($id);
-        return new CategoryResource($cat);
+        $category = Category::findOrfail($id);
+        return new CategoryResource($category);
     }
+
+
+    public function showCategoryAttributes($id)
+    {
+        //get specific only Category record by id with Attributes are belongs its
+        $category = Category::findOrfail($id);
+        $category->Attributes;
+        return new CategoryAttributesResource($category);
+    }
+
+
+
+    /*
+        public function showCategoryProducts($id)
+        {
+            //get specific Category record by id with Products are belongs its
+            $category = Category::findOrfail($id);
+            $category->Products;
+            return new CategoryResource($category);
+        }
+      */
 
 
     /**
@@ -84,9 +106,16 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         //delete a specific Category record by id
-        $cat = Category::findOrfail($id);
-        if ($cat->delete()) {
-            return new CategoryResource($cat);
+        $category = Category::findOrfail($id);
+
+        //delete a specific Attributes are belongs to Category
+        $category->Attributes()->delete();
+
+        //delete a specific Products are belongs to Category record by id
+        // $category->Products()->delete();
+
+        if ($category->delete()) {
+            return new CategoryResource($category);
         }
     }
 }

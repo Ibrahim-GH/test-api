@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,14 +22,16 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::apiResource('category', CategoryController::class);
 
-Route::apiResources([
-     'category' => CategoryController::class,
-     //'posts' => PostController::class,
- ]);
 */
 
-Route::apiResource('category', CategoryController::class);
+Route::apiResources([
+    'category' => CategoryController::class,
+    'attribute' => AttributeController::class,
+]);
+
+Route::get('category/showCategoryAttributes/{id}', [CategoryController::class,'showCategoryAttributes']);
 
 
 

@@ -15,7 +15,7 @@ class CategorySeeder extends Seeder
     public function run()
     {
 
-        //generation Category data with seeder and function factory
+        //generation Category data with seeder
        \App\Models\Category::factory(5)->create();
 
     }
