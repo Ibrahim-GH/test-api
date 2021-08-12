@@ -18,31 +18,25 @@ class Category extends Model
     protected $hidden = [];
 
 
-    //the Category has many Attribute and Attribute belong to one Category
+    ########################### The Relation for Category ###############################
+
+    //the store has many category and category belong to one store
+    public function Store()
+    {
+        return $this->belongsTo(store::class, 'store_id', 'id');
+    }
+
+    //the category has many product and product belong to one category
+    public function Products()
+    {
+        return $this->hasMany(Product::class, 'category_id', 'id');
+    }
+
+
+    //the category has many attribute and attribute belong to one category
     public function Attributes()
     {
         return $this->hasMany(Attribute::class, 'category_id', 'id');
     }
-
-    ########################### The Relation for Category ###############################
-
-//     //the user has many posts and post belong to one user
-//     public function user()
-//     {
-//         return $this->belongsTo(User::class, 'user_id', 'id');
-//     }
-
-//     //the post has many comment and comment belong to one post
-//     public function comments()
-//     {
-//         return $this->hasMany(Comment::class, 'post_id', 'id');
-//     }
-
-//     //the post has many like and like belong to one post
-//     public function likes()
-//     {
-//         return $this->hasMany(Like::class, 'post_id', 'id');
-//     }
-
 
 }

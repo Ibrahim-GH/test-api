@@ -16,7 +16,7 @@ class CategorySeeder extends Seeder
     {
 
         //generation Category data with seeder
-       \App\Models\Category::factory(5)->create();
+          Category::factory(5)->create();
 
     }
 }

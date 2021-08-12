@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Category\CreateCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
+use App\Http\Resources\Category\CategoryProductsResource;
 use App\Models\Category;
 use App\Http\Resources\Category\CategoryAttributesResource;
 use App\Http\Resources\Category\CategoryResource;
@@ -37,6 +38,7 @@ class CategoryController extends Controller
         //Create a new Category record
         $category = new Category();
         $category->name = $request->name;
+        $category->store_id = $request->store_id;
         if ($category->save()) {
             return new CategoryResource($category);
         }
@@ -68,15 +70,15 @@ class CategoryController extends Controller
 
 
 
-    /*
+
         public function showCategoryProducts($id)
         {
             //get specific Category record by id with Products are belongs its
             $category = Category::findOrfail($id);
             $category->Products;
-            return new CategoryResource($category);
+            return new CategoryProductsResource($category);
         }
-      */
+
 
 
     /**
@@ -91,6 +93,7 @@ class CategoryController extends Controller
         //update a specific Category record by id
         $category = Category::findOrfail($id);
         $category->name = $request->name;
+        $category->store_id = $request->store_id;
         if ($category->save()) {
             return new CategoryResource($category);
         }

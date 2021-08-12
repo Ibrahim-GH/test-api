@@ -32,14 +32,15 @@ class AttributeController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param CreateteAttributeRequest $request
+     * @param CreateAttributeRequest $request
      * @return CategoryResource
      */
-    public function store(CreateteAttributeRequest $request)
+    public function store(CreateAttributeRequest $request)
     {
         //Create a new attribute record
         $attribute = new Attribute();
         $attribute->name = $request->name;
+        $attribute->category_id = $request->category_id;
         if ($attribute->save()) {
             return new AttributeResource($attribute);
         }
@@ -83,6 +84,7 @@ class AttributeController extends Controller
         //update a specific Attribute record by id
         $attribute = Attribute::findOrfail($id);
         $attribute->name = $request->name;
+        $attribute->category_id = $request->category_id;
         if ($attribute->save()) {
             return new AttributeResource($attribute);
         }

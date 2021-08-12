@@ -36,6 +36,7 @@ class ParameterController extends Controller
         //Create a new parameter record
         $parameter = new Parameter();
         $parameter->name = $request->name;
+        $parameter->attribute_id = $request->attribute_id;
         if ($parameter->save()) {
             return new ParameterResource($parameter);
         }
@@ -69,6 +70,7 @@ class ParameterController extends Controller
         //update a specific Attribute record by id
         $parameter = Parameter::findOrfail($id);
         $parameter->name = $request->name;
+        $parameter->attribute_id = $request->attribute_id;
         if ($parameter->save()) {
             return new ParameterResource($parameter);
         }

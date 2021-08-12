@@ -9,7 +9,7 @@ class ParameterResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function toArray($request)
@@ -20,7 +20,7 @@ class ParameterResource extends JsonResource
             "name" => $this->name,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
-            "attribute_id" => $this->attribute_id,
+            "attributeId" => $this->attribute_id,
         ];
     }
 }

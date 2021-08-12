@@ -17,4 +17,13 @@ class Parameter extends Model
     ];
 
     protected $hidden = [];
+
+    ########################### The Relation for Parameter ###############################
+
+    //the attribute has many parameter and parameter belong to one attribute
+    public function Attribute()
+    {
+        return $this->belongsTo(Attribute::class, 'attribute_id', 'id');
+    }
+
 }
