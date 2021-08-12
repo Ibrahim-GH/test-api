@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ParameterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,10 +30,12 @@ Route::apiResource('category', CategoryController::class);
 Route::apiResources([
     'category' => CategoryController::class,
     'attribute' => AttributeController::class,
+    'parameter' => ParameterController::class,
 ]);
 
 Route::get('category/showCategoryAttributes/{id}', [CategoryController::class,'showCategoryAttributes']);
 
+Route::get('attribute/showAttributeParameters/{id}', [AttributeController::class,'showAttributeParameters']);
 
 
 

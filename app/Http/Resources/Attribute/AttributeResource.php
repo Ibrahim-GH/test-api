@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Attribute;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryAttributesResource extends JsonResource
+class AttributeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,14 +14,13 @@ class CategoryAttributesResource extends JsonResource
      */
     public function toArray($request)
     {
-       // return parent::toArray($request);
-
+        //return parent::toArray($request);
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            "name" => $this->name,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
-            'attributes' => AttributeResource::collection($this->Attributes),
+            'category_id'=>$this->category_id
         ];
     }
 }

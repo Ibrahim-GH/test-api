@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Parameter;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateCategoryRequest extends FormRequest
+class CreateParameterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,5 +27,4 @@ class CreateCategoryRequest extends FormRequest
             'name' => 'required|string|max:30',
         ];
     }
-
 }

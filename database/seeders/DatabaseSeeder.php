@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Attribute;
 use App\Models\Category;
+use App\Models\Parameter;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -25,15 +26,22 @@ class DatabaseSeeder extends Seeder
         // generation Attribute data with factory
         //Attribute::factory(10)->create();
 
+        // generation Attribute data with factory
+        //Parameter::factory(10)->create();
+
         ######################## End generation data with Factories #######################
 
 
         ######################## generation data with Seeder #######################
         //generation Category data with seeder
-        $this->call(CategorySeeder::class);
+          $this->call(CategorySeeder::class);
 
-        //generation Category data with seeder
-        $this->call(AttributeSeeder::class);
+        //generation Attributes data with seeder
+          $this->call(AttributeSeeder::class);
+
+        //generation Parameters data with seeder
+        $this->call(ParameterSeeder::class);
+
 
         ######################## End generation data with Seeder #######################
 

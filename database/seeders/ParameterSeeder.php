@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Attribute;
+use App\Models\Parameter;
 use Illuminate\Database\Seeder;
 
-class AttributeSeeder extends Seeder
+class ParameterSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,8 +14,7 @@ class AttributeSeeder extends Seeder
      */
     public function run()
     {
-        //generation Attribute data with seeder
-        Attribute::factory(5)->create();
-
+        //generation Parameters data with seeder
+        Parameter::factory(5)->create();
     }
 }

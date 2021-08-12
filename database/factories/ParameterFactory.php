@@ -22,7 +22,8 @@ class ParameterFactory extends Factory
     public function definition()
     {
         return [
-            //
+            // generation Parameters data with factory and faker library
+            'name' => $this->faker->name(),
         ];
     }
 }

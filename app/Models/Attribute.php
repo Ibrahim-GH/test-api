@@ -16,4 +16,10 @@ class Attribute extends Model
     ];
 
     protected $hidden = [];
+
+     public function Parameters()
+     {
+         return $this->hasMany(Parameter::class, 'attribute_id', 'id');
+     }
+
 }

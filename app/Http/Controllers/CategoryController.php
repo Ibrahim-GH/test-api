@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 
-use App\Http\Requests\CreateCategoryRequest;
-use App\Http\Requests\UpdateCategoryRequest;
-use App\Http\Resources\CategoryAttributesResource;
-use App\Http\Resources\CategoryResource;
+use App\Http\Requests\Category\CreateCategoryRequest;
+use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Models\Category;
+use App\Http\Resources\Category\CategoryAttributesResource;
+use App\Http\Resources\Category\CategoryResource;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -29,7 +29,7 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param CreateCategoryRequest $request
      * @return CategoryResource
      */
     public function store(CreateCategoryRequest $request)
@@ -60,7 +60,7 @@ class CategoryController extends Controller
 
     public function showCategoryAttributes($id)
     {
-        //get specific only Category record by id with Attributes are belongs its
+        //get specific Category record by id with Attributes are belongs its
         $category = Category::findOrfail($id);
         $category->Attributes;
         return new CategoryAttributesResource($category);

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Parameter;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AttributeResource extends JsonResource
+class ParameterResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,7 +19,8 @@ class AttributeResource extends JsonResource
             'id' => $this->id,
             "name" => $this->name,
             'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at
+            'updatedAt' => $this->updated_at,
+            "attribute_id" => $this->attribute_id,
         ];
     }
 }
