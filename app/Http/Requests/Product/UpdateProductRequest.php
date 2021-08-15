@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Product;
 
+use App\Rules\CheckValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProductRequest extends FormRequest
@@ -26,6 +27,11 @@ class UpdateProductRequest extends FormRequest
         return [
             'name' => 'string|max:50',
             'description' => 'string|max:500',
+            'categoryId' => 'exists:categories,id',
+
+            'attributess' => ['array', new CheckValidation($this->categoryId)],
+            'attributess.*.attributeId' => 'exists:attributes,id',
+            'attributess.*.parameterId' => 'exists:parameters,id',
         ];
     }
 }

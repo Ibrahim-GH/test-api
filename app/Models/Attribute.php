@@ -32,4 +32,5 @@ class Attribute extends Model
         return $this->hasMany(Parameter::class, 'attribute_id', 'id');
     }
 
+
 }
