@@ -26,6 +26,12 @@ class CreateProductRequest extends FormRequest
         return [
             'name' => 'required|string|max:50',
             'description' => 'required|string|max:500',
+            'categoryId' => 'required|exists:categories,id',
+            'storeId' => 'required|exists:stores,id',
+
+            'attributes' => 'required|array',
+            'attributes.*.attributeId' => 'required|exists:attributes,id',
+            'attributes.*.parameterId' => 'required|exists:parameters,id',
         ];
     }
 }

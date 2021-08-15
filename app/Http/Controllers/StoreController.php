@@ -4,11 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Store\CreateStoreRequest;
 use App\Http\Requests\Store\UpdateStoreRequest;
-use App\Models\Store;
-use App\Http\Resources\Store\StoreCategoriesResource;
-use App\Http\Resources\Store\StoreProductsResource;
 use App\Http\Resources\Store\StoreResource;
-use Illuminate\Http\Request;
+use App\Models\Store;
 
 class StoreController extends Controller
 {
@@ -19,10 +16,9 @@ class StoreController extends Controller
      */
     public function index()
     {
-        //get retrieve all stores records
+        //get retrieve stores records
         $stores = Store::paginate(10);
         return StoreResource::collection($stores);
-
     }
 
 
@@ -34,16 +30,16 @@ class StoreController extends Controller
      */
     public function store(CreateStoreRequest $request)
     {
-        //Create a new store record
+        //create a new store record
         $store = new Store();
         $store->name = $request->name;
         $store->address = $request->address;
-        $store->phone_number = $request->phone_number;
-        //$store->user_id = $request->user_id;
+        $store->phone_number = $request->phoneNumber;
+        $store->user_id = $request->userId;
+
         if ($store->save()) {
             return new StoreResource($store);
         }
-
     }
 
 
@@ -53,29 +49,19 @@ class StoreController extends Controller
      * @param \App\Models\Store $store
      * @return StoreResource
      */
-    public function show($id)
+    public function show(Store $store)
     {
         //get specific store record by id
-        $store = Store::findOrfail($id);
+        $store->load(['Categories']);
         return new StoreResource($store);
     }
 
 
-    public function showStoreCategories($id)
-    {
-        //get specific store record by id with category are belongs its
-        $store = Store::findOrfail($id);
-        $store->Categories;
-        return new StoreCategoriesResource($store);
-    }
-
-
-    public function ShowStoreProducts($id)
+    public function ShowStoreProducts(Store $store)
     {
         //get specific store record by id with Products are belongs its
-        $store = Store::findOrfail($id);
-        $store->Products;
-        return new StoreProductsResource($store);
+        $store->load(['Products']);
+        return new StoreResource($store);
     }
 
 
@@ -86,14 +72,14 @@ class StoreController extends Controller
      * @param \App\Models\Store $store
      * @return StoreResource
      */
-    public function update(UpdateStoreRequest $request, $id)
+    public function update(UpdateStoreRequest $request, Store $store)
     {
+        //dd($request->all());
         //update a specific store record by id
-        $store = Store::findOrfail($id);
         $store->name = $request->name;
         $store->address = $request->address;
-        $store->phone_number = $request->phone_number;
-        //$store->user_id = $request->user_id;
+        $store->phone_number = $request->phoneNumber;
+
         if ($store->save()) {
             return new StoreResource($store);
         }
@@ -106,19 +92,13 @@ class StoreController extends Controller
      * @param \App\Models\Store $store
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Store $store)
     {
-        //delete a specific store record by id
-        $store = Store::findOrfail($id);
-
-        //delete a specific categories are belongs to store
-        $store->Categories()->delete();
-
-        //delete a specific Products are belongs to store
-        $store->Products()->delete();
-
+        //delete a store childes by function boot() in model store then ...
+        //delete a specific store record
         if ($store->delete()) {
             return new StoreResource($store);
         }
     }
+
 }

@@ -2,7 +2,8 @@
 
 namespace App\Http\Resources\Category;
 
-use App\Models\Category;
+use App\Http\Resources\Attribute\AttributeResource;
+use App\Http\Resources\Product\ProductResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoryResource extends JsonResource
@@ -21,7 +22,9 @@ class CategoryResource extends JsonResource
             'name' => $this->name,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
-            'storeId' => $this->store_id
+            'storeId' => $this->store_id,
+            'attributes' => AttributeResource::collection($this->whenLoaded('Attributes')),
+            'products' => ProductResource::collection($this->whenLoaded('Products')),
         ];
     }
 }

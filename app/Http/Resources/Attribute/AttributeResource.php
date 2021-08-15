@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Attribute;
 
+use App\Http\Resources\Parameter\ParameterResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AttributeResource extends JsonResource
@@ -20,7 +21,8 @@ class AttributeResource extends JsonResource
             "name" => $this->name,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
-            'categoryId' => $this->category_id
+            'categoryId' => $this->category_id,
+             'parameters' => ParameterResource::collection($this->whenLoaded('Parameters')),
         ];
     }
 }

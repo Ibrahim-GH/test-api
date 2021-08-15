@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateParametersTable extends Migration
+class CreateCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateParametersTable extends Migration
      */
     public function up()
     {
-        Schema::create('parameters', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            //$table->foreignId('attribute_id')->constrained();
+            $table->foreignId('store_id')->references('id')->on('stores')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +28,9 @@ class CreateParametersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('parameters');
+        //delete category with child
+        Schema::dropIfExists('attributes');
+        Schema::dropIfExists('products');
+        Schema::dropIfExists('categories');
     }
 }

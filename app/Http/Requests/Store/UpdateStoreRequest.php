@@ -26,7 +26,7 @@ class UpdateStoreRequest extends FormRequest
         return [
             'name' => 'string|max:30',
             'address' => 'string|max:50',
-            'phone_number' => 'min:11|numeric|unique:stores',
+            'phoneNumber' => 'min:11|numeric|unique:stores,phone_number',
         ];
     }
 }

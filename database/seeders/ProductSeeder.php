@@ -18,18 +18,8 @@ class ProductSeeder extends Seeder
     public function run()
     {
         //generation product data with seeder
-          //Product::factory(5)->create();
+        Product::factory(50)->create();
 
-
-        for ($i = 0; $i <= 5; $i++) {
-            Product::create([
-                // 'user_id' => '1',
-                'name' => 'product' . $i,
-                'description' => 'product' . $i,
-                'store_id' => $i,
-                'category_id' => $i,
-            ]);
-        }
 
     }
 }

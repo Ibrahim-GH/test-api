@@ -17,28 +17,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-
-        ######################## generation data with Factories #######################
-        //if you want to generate data with factory .. do make comment on code
-
-        // generation Store data with factory
-        //Store::factory(10)->create();
-
-        // generation Category data with factory
-        Category::factory(10)->create();
-
-        // generation Attribute data with factory
-        Attribute::factory(10)->create();
-
-        // generation Attribute data with factory
-        Parameter::factory(10)->create();
-
-        // generation Product data with factory
-        //Product::factory(10)->create();
-
-        ######################## End generation data with Factories #######################
-
 
         ######################## generation data with Seeder #######################
 

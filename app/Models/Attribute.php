@@ -12,7 +12,7 @@ class Attribute extends Model
     protected $table = 'attributes';
 
     protected $fillable = [
-        'name','category_id',
+        'name', 'category_id',
     ];
 
     protected $hidden = [];
@@ -27,9 +27,9 @@ class Attribute extends Model
     }
 
     //the attribute has many parameter and parameter belong to one attribute
-     public function Parameters()
-     {
-         return $this->hasMany(Parameter::class, 'attribute_id', 'id');
-     }
+    public function Parameters()
+    {
+        return $this->hasMany(Parameter::class, 'attribute_id', 'id');
+    }
 
 }

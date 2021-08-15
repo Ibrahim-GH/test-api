@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Parameter\CreateParameterRequest;
 use App\Http\Requests\Parameter\UpdateParameterRequest;
-use App\Models\Parameter;
 use App\Http\Resources\Parameter\ParameterResource;
-use Illuminate\Http\Request;
+use App\Models\Parameter;
 
 class ParameterController extends Controller
 {
@@ -18,10 +17,9 @@ class ParameterController extends Controller
      */
     public function index()
     {
-        //get retrieve all parameters records
+        //get retrieve parameters records
         $parameters = Parameter::paginate(10);
         return ParameterResource::collection($parameters);
-
     }
 
 
@@ -36,7 +34,8 @@ class ParameterController extends Controller
         //Create a new parameter record
         $parameter = new Parameter();
         $parameter->name = $request->name;
-        $parameter->attribute_id = $request->attribute_id;
+        $parameter->attribute_id = $request->attributeId;
+
         if ($parameter->save()) {
             return new ParameterResource($parameter);
         }
@@ -70,7 +69,7 @@ class ParameterController extends Controller
         //update a specific Attribute record by id
         $parameter = Parameter::findOrfail($id);
         $parameter->name = $request->name;
-        $parameter->attribute_id = $request->attribute_id;
+
         if ($parameter->save()) {
             return new ParameterResource($parameter);
         }

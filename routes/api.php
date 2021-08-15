@@ -5,7 +5,6 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,16 +18,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-/*
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::apiResource('category', CategoryController::class);
-
-*/
-
 Route::apiResources([
     'store' => StoreController::class,
     'category' => CategoryController::class,
@@ -37,13 +26,10 @@ Route::apiResources([
     'product' => ProductController::class,
 ]);
 
-Route::get('store/categories/{id}', [StoreController::class, 'showStoreCategories']);
-Route::get('store/products/{id}', [StoreController::class, 'ShowStoreProducts']);
 
-Route::get('category/attributes/{id}', [CategoryController::class, 'showCategoryAttributes']);
-Route::get('category/products/{id}', [CategoryController::class, 'showCategoryProducts']);
+Route::get('store/{store}/with-products', [StoreController::class, 'ShowStoreProducts']);
 
-Route::get('attribute/parameters/{id}', [AttributeController::class, 'showAttributeParameters']);
+Route::get('category/{category}/with-products', [CategoryController::class, 'showCategoryProducts']);
 
 
 

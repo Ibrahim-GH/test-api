@@ -6,7 +6,8 @@ use App\Http\Requests\Product\CreateProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Models\Product;
 use App\Http\Resources\Product\ProductResource;
-use Illuminate\Http\Request;
+use App\Models\ProductAttributeParameter;
+
 
 class ProductController extends Controller
 {
@@ -17,7 +18,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //get retrieve all Products records
+        //get retrieve Products records
         $products = Product::paginate(10);
         return ProductResource::collection($products);
 
@@ -36,9 +37,19 @@ class ProductController extends Controller
         $product = new Product();
         $product->name = $request->name;
         $product->description = $request->description;
-        $product->category_id = $request->category_id;
-        $product->store_id = $request->store_id;
+        $product->category_id = $request->categoryId;
+        $product->store_id = $request->storeId;
+
         if ($product->save()) {
+
+            foreach ($request->attributes as $attribute) {
+                $productAttributeParameter = new ProductAttributeParameter();
+                $productAttributeParameter->product_id = $product->id;
+                $productAttributeParameter->attribute_id = $attribute['attributeId'];
+                $productAttributeParameter->parameter_id = $attribute['parameterId'];
+
+                $productAttributeParameter->save();
+            }
             return new ProductResource($product);
         }
 
@@ -48,13 +59,12 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\Category $category
+     * @param \App\Models\Product $product
      * @return ProductResource
      */
-    public function show($id)
+    public function show(Product $product)
     {
         //get specific product record by id
-        $product = Product::findOrfail($id);
         return new ProductResource($product);
     }
 
@@ -66,14 +76,12 @@ class ProductController extends Controller
      * @param \App\Models\Product $product
      * @return ProductResource
      */
-    public function update(UpdateProductRequest $request, $id)
+    public function update(UpdateProductRequest $request, Product $product)
     {
         //update a specific product record by id
-        $product = Product::findOrfail($id);
         $product->name = $request->name;
         $product->description = $request->description;
-        $product->category_id = $request->category_id;
-        $product->store_id = $request->store_id;
+
         if ($product->save()) {
             return new ProductResource($product);
         }
@@ -86,10 +94,9 @@ class ProductController extends Controller
      * @param \App\Models\Product $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Product $product)
     {
         //delete a specific product record by id
-        $product = Product::findOrfail($id);
         if ($product->delete()) {
             return new ProductResource($product);
         }

@@ -22,10 +22,11 @@ class CategoryFactory extends Factory
      */
     public function definition()
     {
+        $storesIds = Store::all()->pluck('id')->toArray();
         return [
             // generation Category data with factory and faker library
             'name' => $this->faker->name(),
-            //'store_id' => factory(Store::class),
+            'store_id' => $this->faker->randomElement($storesIds),
         ];
     }
 }

@@ -25,6 +25,7 @@ class CreateCategoryRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:30',
+            'storeId' => 'required|exists:stores,id'
         ];
     }
 

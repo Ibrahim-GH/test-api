@@ -3,15 +3,11 @@
 namespace App\Http\Controllers;
 
 
-
 use App\Http\Requests\Attribute\CreateAttributeRequest;
 use App\Http\Requests\Attribute\UpdateAttributeRequest;
-use App\Models\Attribute;
-use App\Http\Resources\Attribute\AttributeParametersResource;
 use App\Http\Resources\Attribute\AttributeResource;
+use App\Models\Attribute;
 
-
-use Illuminate\Http\Request;
 
 class AttributeController extends Controller
 {
@@ -22,7 +18,7 @@ class AttributeController extends Controller
      */
     public function index()
     {
-        //get retrieve all attributes records
+        //get retrieve attributes records
         $attributes = Attribute::paginate(10);
         return AttributeResource::collection($attributes);
 
@@ -33,14 +29,15 @@ class AttributeController extends Controller
      * Store a newly created resource in storage.
      *
      * @param CreateAttributeRequest $request
-     * @return CategoryResource
+     * @return AttributeResource
      */
     public function store(CreateAttributeRequest $request)
     {
         //Create a new attribute record
         $attribute = new Attribute();
         $attribute->name = $request->name;
-        $attribute->category_id = $request->category_id;
+        $attribute->category_id = $request->categoryId;
+
         if ($attribute->save()) {
             return new AttributeResource($attribute);
         }
@@ -54,21 +51,11 @@ class AttributeController extends Controller
      * @param \App\Models\Category $category
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Attribute $attribute)
     {
         //get specific Attribute record by id
-        $attribute = Attribute::findOrfail($id);
+        $attribute->load('Parameters');
         return new AttributeResource($attribute);
-    }
-
-
-
-    public function showAttributeParameters($id)
-    {
-        //get specific Attribute record by id with parameters are belongs its
-        $attribute = Attribute::findOrfail($id);
-        $attribute->parameters;
-        return new AttributeParametersResource($attribute);
     }
 
 
@@ -76,15 +63,14 @@ class AttributeController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Category $category
+     * @param \App\Models\Attribute $category
      * @return AttributeResource
      */
-    public function update(UpdateAttributeRequest $request, $id)
+    public function update(UpdateAttributeRequest $request, Attribute $attribute)
     {
         //update a specific Attribute record by id
-        $attribute = Attribute::findOrfail($id);
         $attribute->name = $request->name;
-        $attribute->category_id = $request->category_id;
+
         if ($attribute->save()) {
             return new AttributeResource($attribute);
         }
@@ -94,13 +80,16 @@ class AttributeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\Category $category
+     * @param \App\Models\Attribute $category
      * @return AttributeResource
      */
-    public function destroy($id)
+    public function destroy(Attribute $attribute)
     {
         //delete a specific Attribute record by id
-        $attribute = Attribute::findOrfail($id);
+
+        //delete a specific parameters are belongs to attribute
+        $attribute->Parameters()->delete();
+
         if ($attribute->delete()) {
             return new AttributeResource($attribute);
         }

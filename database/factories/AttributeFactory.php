@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Attribute;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AttributeFactory extends Factory
@@ -21,9 +22,11 @@ class AttributeFactory extends Factory
      */
     public function definition()
     {
+        $categoriesIds = Category::all()->pluck('id')->toArray();
         return [
             // generation Attribute data with factory and faker library
             'name' => $this->faker->name(),
+            'category_id' => $this->faker->randomElement($categoriesIds),
         ];
     }
 }

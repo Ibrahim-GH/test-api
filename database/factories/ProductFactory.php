@@ -23,12 +23,14 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
+        $storesIds = Store::all()->pluck('id')->toArray();
+        $categoriesIds = Category::all()->pluck('id')->toArray();
         return [
             // generation Product data with factory and faker library
             'name' => $this->faker->name(),
             'description' => $this->faker->paragraph(),
-            //'store_id' => factory(Store::class),
-            //'category_id' => factory(Category::class),
+            'store_id' => $this->faker->randomElement($storesIds),
+            'category_id' => $this->faker->randomElement($categoriesIds),
         ];
     }
 }

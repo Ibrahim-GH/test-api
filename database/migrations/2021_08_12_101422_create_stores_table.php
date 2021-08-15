@@ -17,8 +17,8 @@ class CreateStoresTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('address');
-            $table->integer('phone_number');
-            //$table->foreignId('user_id')->constrained();
+            $table->string('phone_number');
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }
@@ -30,6 +30,8 @@ class CreateStoresTable extends Migration
      */
     public function down()
     {
+        //delete store with child
+        Schema::dropIfExists('categories');
         Schema::dropIfExists('stores');
     }
 }
