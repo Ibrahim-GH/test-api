@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Attribute\CreateAttributeRequest;
 use App\Http\Requests\Attribute\UpdateAttributeRequest;
-use App\Http\Resources\Attribute\AttributeResource;
 use App\Models\Attribute;
+use App\Http\Resources\AttributeResource;
 
 
 class AttributeController extends Controller

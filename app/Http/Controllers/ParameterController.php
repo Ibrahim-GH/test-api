@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Parameter\CreateParameterRequest;
 use App\Http\Requests\Parameter\UpdateParameterRequest;
-use App\Http\Resources\Parameter\ParameterResource;
 use App\Models\Parameter;
+use App\Http\Resources\ParameterResource;
+
 
 class ParameterController extends Controller
 {

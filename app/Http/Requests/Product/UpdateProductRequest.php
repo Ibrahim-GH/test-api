@@ -27,6 +27,9 @@ class UpdateProductRequest extends FormRequest
         return [
             'name' => 'string|max:50',
             'description' => 'string|max:500',
+           //'price' => [ 'nullable', 'numeric', 'between:0,99' ]
+            'price' => 'nullable|numeric|between:0,99',
+            'quantity' => 'integer|between:1,100',
             'categoryId' => 'exists:categories,id',
 
             'attributess' => ['array', new CheckValidation($this->categoryId)],

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Store\CreateStoreRequest;
 use App\Http\Requests\Store\UpdateStoreRequest;
-use App\Http\Resources\Store\StoreResource;
 use App\Models\Store;
+use App\Http\Resources\StoreResource;
 
 class StoreController extends Controller
 {

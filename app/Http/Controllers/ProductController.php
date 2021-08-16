@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Product\CreateProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
-use App\Http\Resources\Product\ProductResource;
 use App\Models\Product;
 use App\Models\ProductAttributeParameter;
+use App\Http\Resources\ProductResource;
 
 
 class ProductController extends Controller
@@ -37,6 +37,8 @@ class ProductController extends Controller
         $product = new Product();
         $product->name = $request->name;
         $product->description = $request->description;
+        $product->price = $request->price;
+        $product->quantity = $request->quantity;
         $product->category_id = $request->categoryId;
         $product->store_id = $request->storeId;
 
@@ -81,6 +83,8 @@ class ProductController extends Controller
         //update a specific product record by id
         $product->name = $request->name;
         $product->description = $request->description;
+        $product->price = $request->price;
+        $product->quantity = $request->quantity;
 
         //in state: attribute and parameter do not exist in request do not save in foreach ...
         if ($request->attributess !== null) {

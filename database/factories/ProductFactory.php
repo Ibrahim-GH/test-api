@@ -29,6 +29,8 @@ class ProductFactory extends Factory
             // generation Product data with factory and faker library
             'name' => $this->faker->name(),
             'description' => $this->faker->paragraph(),
+            'price' => $this->faker->randomDigit(),
+            'quantity' => $this->faker->randomDigit(),
             'store_id' => $this->faker->randomElement($storesIds),
             'category_id' => $this->faker->randomElement($categoriesIds),
         ];

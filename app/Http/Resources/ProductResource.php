@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Category;
+namespace App\Http\Resources\Product;
 
-use App\Http\Resources\Product\ProductResource;
+use App\Http\Resources\Store\StoreResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryProductsResource extends JsonResource
+class ProductResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,15 +15,18 @@ class CategoryProductsResource extends JsonResource
      */
     public function toArray($request)
     {
-        //return parent::toArray($request);
+       // return parent::toArray($request);
 
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'description'=>$this->description,
+            'price' => $this->price,
+            'quantity'=>$this->quantity,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
+            'categoryId'=>$this->category_id,
             'storeId'=>$this->store_id,
-            'products' => ProductResource::collection($this->Products),
         ];
     }
 }

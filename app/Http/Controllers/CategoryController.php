@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Category\CreateCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
-use App\Http\Resources\Category\CategoryResource;
 use App\Models\Category;
+use App\Http\Resources\CategoryResource;
 
 class CategoryController extends Controller
 {
