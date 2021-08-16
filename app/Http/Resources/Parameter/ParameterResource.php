@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Attribute;
+namespace App\Http\Resources\Parameter;
 
-use App\Http\Resources\Parameter\ParameterResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AttributeResource extends JsonResource
+class ParameterResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,10 +18,11 @@ class AttributeResource extends JsonResource
         return [
             'id' => $this->id,
             "name" => $this->name,
+            //this is time for softDeleted()
+            'deletedAt'=>$this->deleted_at,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
-            'categoryId' => $this->category_id,
-             'parameters' => ParameterResource::collection($this->whenLoaded('Parameters')),
+            "attributeId" => $this->attribute_id,
         ];
     }
 }

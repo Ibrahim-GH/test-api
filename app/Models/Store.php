@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Store extends Model
 {
-    use HasFactory;
+    use HasFactory, softDeletes;
 
     protected $table = 'stores';
 
@@ -34,33 +35,33 @@ class Store extends Model
 
 
     // this is a recommended way to declare event handlers
-    public static function boot()
-    {
-        Parent::boot();
-        self::deleting(function ($store) {// before delete() method call this
-
-            //get the store categories
-            $categories = $store->Categories;
-            foreach ($categories as $category) {
-                //get the attributes and it is belongs to category
-                $attributes = $category->Attributes;
-                foreach ($attributes as $attribute) {
-                    //delete the parameters and it is belongs to attribute
-                    $attribute->Parameters()->delete();
-                }
-                //delete the attributes and products for category
-                $category->Attributes()->delete();
-                $category->Products()->delete();
-            }
-
-            //delete a specific categories are belongs to store
-            $store->Categories()->delete();
-
-            //delete a specific Products are belongs to store
-            $store->Products()->delete();
-
-            // do the rest of the cleanup...
-        });
-    }
+//    public static function boot()
+//    {
+//        Parent::boot();
+//        self::deleting(function ($store) {// before delete() method call this
+//
+//            //get the store categories
+//            $categories = $store->Categories;
+//            foreach ($categories as $category) {
+//                //get the attributes and it is belongs to category
+//                $attributes = $category->Attributes;
+//                foreach ($attributes as $attribute) {
+//                    //delete the parameters and it is belongs to attribute
+//                    $attribute->Parameters()->delete();
+//                }
+//                //delete the attributes and products for category
+//                $category->Attributes()->delete();
+//                $category->Products()->delete();
+//            }
+//
+//            //delete a specific categories are belongs to store
+//            $store->Categories()->delete();
+//
+//            //delete a specific Products are belongs to store
+//            $store->Products()->delete();
+//
+//            // do the rest of the cleanup...
+//        });
+//    }
 
 }

@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Attribute\CreateAttributeRequest;
 use App\Http\Requests\Attribute\UpdateAttributeRequest;
 use App\Models\Attribute;
-use App\Http\Resources\AttributeResource;
+use App\Http\Resources\Attribute\AttributeResource;
 
 
 class AttributeController extends Controller
@@ -85,13 +85,30 @@ class AttributeController extends Controller
      */
     public function destroy(Attribute $attribute)
     {
-        //delete a specific Attribute record by id
-
-        //delete a specific parameters are belongs to attribute
-        $attribute->Parameters()->delete();
+//        delete a attribute by softDelete .
+//        you are not actually removed from your database.
+//        Instead, a deleted_at attribute is set on the model and inserted into the database.
+//        If a model has a non-null deleted_at value, the model has been soft deleted
 
         if ($attribute->delete()) {
             return new AttributeResource($attribute);
         }
+    }
+
+    //this query didn't find our deleted data. So time to make query with withTrashed.
+    // So let's have a try
+    public function withTrashed()
+    {
+        //get back our deleted category data using withTrashed().
+        $attribute = Attribute::query()->where('id', 1)->withTrashed()->first();
+        return new AttributeResource($attribute);
+    }
+
+    //retrieve this attribute data with norlam eloquent query
+    public function restore()
+    {
+        $attribute = Attribute::query()->where('id', 1)->withTrashed()->first();
+        $attribute->restore();
+        return new AttributeResource($attribute);
     }
 }

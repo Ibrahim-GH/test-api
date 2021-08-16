@@ -16,6 +16,7 @@ class CreateAttributesTable extends Migration
         Schema::create('attributes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->softDeletes();
             $table->foreignId('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->timestamps();
         });
@@ -28,8 +29,6 @@ class CreateAttributesTable extends Migration
      */
     public function down()
     {
-        //delete attribute with child
-        Schema::dropIfExists('parameters');
         Schema::dropIfExists('attributes');
     }
 }

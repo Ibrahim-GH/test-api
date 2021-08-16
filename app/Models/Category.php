@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
-    use HasFactory;
+    use HasFactory, softDeletes;
 
     protected $table = 'categories';
 
@@ -39,25 +40,25 @@ class Category extends Model
     }
 
     // this is a recommended way to declare event handlers
-    public static function boot()
-    {
-        Parent::boot();
-        self::deleting(function ($category) {   // before delete() method call this
-
-           //get the category attributes
-            $attributes = $category->Attributes;
-            foreach ($attributes as $attribute) {
-                //delete the parameters and it is belongs to attribute
-                $attribute->Parameters()->delete();
-            }
-
-            //delete a specific Attributes are belongs to Category
-            $category->Attributes()->delete();
-
-            //delete a specific Products are belongs to Category record by id
-            $category->Products()->delete();
-            // do the rest of the cleanup...
-        });
-    }
+//    public static function boot()
+//    {
+//        Parent::boot();
+//        self::deleting(function ($category) {   // before delete() method call this
+//
+//           //get the category attributes
+//            $attributes = $category->Attributes;
+//            foreach ($attributes as $attribute) {
+//                //delete the parameters and it is belongs to attribute
+//                $attribute->Parameters()->delete();
+//            }
+//
+//            //delete a specific Attributes are belongs to Category
+//            $category->Attributes()->delete();
+//
+//            //delete a specific Products are belongs to Category record by id
+//            $category->Products()->delete();
+//            // do the rest of the cleanup...
+//        });
+//    }
 
 }

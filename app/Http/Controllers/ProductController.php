@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Product\CreateProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
+use App\Http\Resources\Product\ProductResource;
 use App\Models\Product;
 use App\Models\ProductAttributeParameter;
-use App\Http\Resources\ProductResource;
 
 
 class ProductController extends Controller
@@ -112,9 +112,30 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //delete a specific product record by id
+//        delete a product by softDelete .
+//        you are not actually removed from your database.
+//        Instead, a deleted_at attribute is set on the model and inserted into the database.
+//        If a model has a non-null deleted_at value, the model has been soft deleted
+
         if ($product->delete()) {
             return new ProductResource($product);
         }
+    }
+
+    //this query didn't find our deleted data. So time to make query with withTrashed.
+    // So let's have a try
+    public function withTrashed()
+    {
+        //get back our deleted product data using withTrashed().
+        $product = Product::query()->where('id', 1)->withTrashed()->first();
+        return new ProductResource($product);
+    }
+
+    //retrieve this product data with norlam eloquent query
+    public function restore()
+    {
+        $product = Product::query()->where('id', 1)->withTrashed()->first();
+        $product->restore();
+        return new ProductResource($product);
     }
 }

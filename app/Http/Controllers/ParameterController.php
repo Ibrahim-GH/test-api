@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Parameter\CreateParameterRequest;
 use App\Http\Requests\Parameter\UpdateParameterRequest;
 use App\Models\Parameter;
-use App\Http\Resources\ParameterResource;
+use App\Http\Resources\Parameter\ParameterResource;
 
 
 class ParameterController extends Controller
@@ -83,12 +83,32 @@ class ParameterController extends Controller
      * @param \App\Models\Category $category
      * @return AttributeResource
      */
-    public function destroy($id)
+    public function destroy(Parameter $parameter)
     {
-        //delete a specific parameter record by id
-        $parameter = Parameter::findOrfail($id);
+//        delete a parameter by softDelete .
+//        you are not actually removed from your database.
+//        Instead, a deleted_at attribute is set on the model and inserted into the database.
+//        If a model has a non-null deleted_at value, the model has been soft deleted
+
         if ($parameter->delete()) {
             return new ParameterResource($parameter);
         }
+    }
+
+    //this query didn't find our deleted data. So time to make query with withTrashed.
+    // So let's have a try
+    public function withTrashed()
+    {
+        //get back our deleted parameter data using withTrashed().
+        $parameter = Parameter::query()->where('id', 1)->withTrashed()->first();
+        return new ParameterResource($parameter);
+    }
+
+    //retrieve this parameter data with norlam eloquent query
+    public function restore()
+    {
+        $parameter = Parameter::query()->where('id', 1)->withTrashed()->first();
+        $parameter->restore();
+        return new ParameterResource($parameter);
     }
 }

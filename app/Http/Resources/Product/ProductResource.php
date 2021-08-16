@@ -23,6 +23,8 @@ class ProductResource extends JsonResource
             'description'=>$this->description,
             'price' => $this->price,
             'quantity'=>$this->quantity,
+            //this is time for softDeleted()
+            'deletedAt'=>$this->deleted_at,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'categoryId'=>$this->category_id,

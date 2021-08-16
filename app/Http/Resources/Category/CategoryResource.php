@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Store;
+namespace App\Http\Resources\Category;
 
-use App\Http\Resources\Category\CategoryResource;
+use App\Http\Resources\Attribute\AttributeResource;
 use App\Http\Resources\Product\ProductResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class StoreResource extends JsonResource
+class CategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,16 +17,15 @@ class StoreResource extends JsonResource
     public function toArray($request)
     {
         //return parent::toArray($request);
-
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'address' => $this->address,
-            'phoneNumber' => $this->phone_number,
+            //this is time for softDeleted()
+            'deletedAt'=>$this->deleted_at,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
-            'userId'=>$this->user_id,
-            'categories' => CategoryResource::collection($this->whenLoaded('Categories')),
+            'storeId' => $this->store_id,
+            'attributes' => AttributeResource::collection($this->whenLoaded('Attributes')),
             'products' => ProductResource::collection($this->whenLoaded('Products')),
         ];
     }

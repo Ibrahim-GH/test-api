@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Category\CreateCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Models\Category;
-use App\Http\Resources\CategoryResource;
+use App\Http\Resources\Category\CategoryResource;
 
 class CategoryController extends Controller
 {
@@ -92,11 +92,30 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //delete a category childes by function boot() in model category then ...
-        //delete a specific Category record
+//        delete a category by softDelete .
+//        you are not actually removed from your database.
+//        Instead, a deleted_at attribute is set on the model and inserted into the database.
+//        If a model has a non-null deleted_at value, the model has been soft deleted
+
         if ($category->delete()) {
             return new CategoryResource($category);
         }
     }
 
+    //this query didn't find our deleted data. So time to make query with withTrashed.
+    // So let's have a try
+    public function withTrashed()
+    {
+        //get back our deleted category data using withTrashed().
+        $category = Category::query()->where('id', 1)->withTrashed()->first();
+        return new CategoryResource($category);
+    }
+
+    //retrieve this category data with norlam eloquent query
+    public function restore()
+    {
+        $category = Category::query()->where('id', 1)->withTrashed()->first();
+        $category->restore();
+        return new CategoryResource($category);
+    }
 }

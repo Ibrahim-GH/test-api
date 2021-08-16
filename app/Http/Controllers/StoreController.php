@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Store\CreateStoreRequest;
 use App\Http\Requests\Store\UpdateStoreRequest;
+use App\Http\Resources\Store\StoreResource;
 use App\Models\Store;
-use App\Http\Resources\StoreResource;
 
 class StoreController extends Controller
 {
@@ -94,11 +94,30 @@ class StoreController extends Controller
      */
     public function destroy(Store $store)
     {
-        //delete a store childes by function boot() in model store then ...
-        //delete a specific store record
+//        delete a store by softDelete .
+//        you are not actually removed from your database.
+//        Instead, a deleted_at attribute is set on the model and inserted into the database.
+//        If a model has a non-null deleted_at value, the model has been soft deleted
+
         if ($store->delete()) {
             return new StoreResource($store);
         }
     }
 
+    //this query didn't find our deleted data. So time to make query with withTrashed.
+    // So let's have a try
+    public function withTrashed()
+    {
+        //get back our deleted store data using withTrashed().
+        $store = Store::query()->where('id', 1)->withTrashed()->first();
+        return new StoreResource($store);
+    }
+
+    //retrieve this store data with norlam eloquent query
+    public function restore()
+    {
+        $store = Store::query()->where('id', 1)->withTrashed()->first();
+        $store->restore();
+        return new StoreResource($store);
+    }
 }

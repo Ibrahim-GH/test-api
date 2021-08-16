@@ -16,6 +16,7 @@ class CreateParametersTable extends Migration
         Schema::create('parameters', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->softDeletes();
             $table->foreignId('attribute_id')->references('id')->on('attributes')->onDelete('cascade');
             $table->timestamps();
         });
