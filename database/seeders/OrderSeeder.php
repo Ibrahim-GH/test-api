@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Store;
+use App\Models\Order;
 use Illuminate\Database\Seeder;
 
-class StoreSeeder extends Seeder
+class OrderSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,7 +15,6 @@ class StoreSeeder extends Seeder
     public function run()
     {
         //generation Store data with seeder
-        Store::factory(5)->create();
-
+        Order::factory(5)->create();
     }
 }

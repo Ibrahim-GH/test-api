@@ -2,10 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Attribute;
-use App\Models\Category;
-use App\Models\Parameter;
-use App\Models\Store;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -21,7 +17,7 @@ class DatabaseSeeder extends Seeder
         ######################## generation data with Seeder #######################
 
         //generation Store data with seeder
-         $this->call(StoreSeeder::class);
+        $this->call(StoreSeeder::class);
 
         //generation Category data with seeder
         $this->call(CategorySeeder::class);
@@ -33,7 +29,10 @@ class DatabaseSeeder extends Seeder
         $this->call(ParameterSeeder::class);
 
         //generation Product data with seeder
-         $this->call(ProductSeeder::class);
+        $this->call(ProductSeeder::class);
+
+        //generation order data with seeder
+        $this->call(OrderSeeder::class);
 
         ######################## End generation data with Seeder #######################
 

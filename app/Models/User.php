@@ -17,9 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'name', 'address', 'phone_number',
     ];
 
     /**
@@ -28,7 +26,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password',
         'remember_token',
     ];
 
@@ -40,4 +37,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    //the user has many order and order belong to one user
+    public function Orders()
+    {
+        return $this->belongsTo(Order::class, 'user_id', 'id');
+    }
 }
