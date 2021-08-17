@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Parameter\CreateParameterRequest;
 use App\Http\Requests\Parameter\UpdateParameterRequest;
-use App\Models\Parameter;
 use App\Http\Resources\Parameter\ParameterResource;
+use App\Models\Parameter;
 
 
 class ParameterController extends Controller
@@ -95,20 +95,16 @@ class ParameterController extends Controller
         }
     }
 
-    //this query didn't find our deleted data. So time to make query with withTrashed.
-    // So let's have a try
-    public function withTrashed()
-    {
-        //get back our deleted parameter data using withTrashed().
-        $parameter = Parameter::query()->where('id', 1)->withTrashed()->first();
-        return new ParameterResource($parameter);
-    }
 
-    //retrieve this parameter data with norlam eloquent query
-    public function restore()
+    public function restore($id)
     {
-        $parameter = Parameter::query()->where('id', 1)->withTrashed()->first();
+        //this query didn't find our deleted data. So time to make query with withTrashed.
+        // So let's have a try
+        $parameter = Parameter::withTrashed()->find($id);
+
+        //retrieve this parameter data with norlam eloquent query
         $parameter->restore();
+
         return new ParameterResource($parameter);
     }
 }

@@ -123,20 +123,16 @@ class ProductController extends Controller
         }
     }
 
-    //this query didn't find our deleted data. So time to make query with withTrashed.
-    // So let's have a try
-    public function withTrashed()
-    {
-        //get back our deleted product data using withTrashed().
-        $product = Product::query()->where('id', 1)->withTrashed()->first();
-        return new ProductResource($product);
-    }
 
-    //retrieve this product data with norlam eloquent query
-    public function restore()
+    public function restore($id)
     {
-        $product = Product::query()->where('id', 1)->withTrashed()->first();
+        //this query didn't find our deleted data. So time to make query with withTrashed.
+        // So let's have a try
+        $product = Product::withTrashed()->find($id);
+
+        //retrieve this product data with norlam eloquent query
         $product->restore();
+
         return new ProductResource($product);
     }
 }

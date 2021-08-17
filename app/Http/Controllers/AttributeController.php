@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Attribute\CreateAttributeRequest;
 use App\Http\Requests\Attribute\UpdateAttributeRequest;
-use App\Models\Attribute;
 use App\Http\Resources\Attribute\AttributeResource;
+use App\Models\Attribute;
 
 
 class AttributeController extends Controller
@@ -95,20 +95,16 @@ class AttributeController extends Controller
         }
     }
 
-    //this query didn't find our deleted data. So time to make query with withTrashed.
-    // So let's have a try
-    public function withTrashed()
-    {
-        //get back our deleted category data using withTrashed().
-        $attribute = Attribute::query()->where('id', 1)->withTrashed()->first();
-        return new AttributeResource($attribute);
-    }
 
-    //retrieve this attribute data with norlam eloquent query
-    public function restore()
+    public function restore($id)
     {
-        $attribute = Attribute::query()->where('id', 1)->withTrashed()->first();
+        //this query didn't find our deleted data. So time to make query with withTrashed.
+        // So let's have a try
+        $attribute = Attribute::withTrashed()->find($id);
+
+        //retrieve this attribute data with norlam eloquent query
         $attribute->restore();
+
         return new AttributeResource($attribute);
     }
 }

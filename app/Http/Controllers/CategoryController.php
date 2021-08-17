@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Category\CreateCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
-use App\Models\Category;
 use App\Http\Resources\Category\CategoryResource;
-use App\Models\Order;
+use App\Models\Category;
 
 class CategoryController extends Controller
 {
@@ -103,21 +102,16 @@ class CategoryController extends Controller
         }
     }
 
-    //this query didn't find our deleted data. So time to make query with withTrashed.
-    // So let's have a try
-    public function withTrashed(Category $category)
-    {
-//        dd('$order');
-        //get back our deleted category data using withTrashed().
-        $category = Category::query()->where('id', $id)->withTrashed()->first();
-        return new CategoryResource($category);
-    }
 
-    //retrieve this category data with norlam eloquent query
-    public function restore()
+    public function restore($id)
     {
-        $category = Category::query()->where('id', 1)->withTrashed()->first();
+        //this query didn't find our deleted data. So time to make query with withTrashed.
+        // So let's have a try
+        $category = Category::withTrashed()->find($id);
+
+        //retrieve this category data with norlam eloquent query
         $category->restore();
+
         return new CategoryResource($category);
     }
 }

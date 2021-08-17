@@ -34,26 +34,19 @@ Route::get('category/{category}/with-products', [CategoryController::class, 'sho
 
 ######################### other routes for withTrashed then restore#################################
 
-//Route::get('user/{user}/withTrashed', [UserController::class, 'withTrashed']);
 //Route::get('user/{user}/restore', [UserController::class, 'restore']);
 
-Route::get('store/{store}/withTrashed', [StoreController::class, 'withTrashed']);
-Route::get('store/{store}/restore', [StoreController::class, 'restore']);
+Route::get('store/{id}/restore', [StoreController::class, 'restore']);
 
-Route::get('category/{category}/withTrashed', [CategoryController::class, 'withTrashed']);
-Route::get('category/{category}/restore', [CategoryController::class, 'restore']);
+Route::get('category/{id}/restore', [CategoryController::class, 'restore']);
 
-Route::get('attribute/{attribute}/withTrashed', [AttributeController::class, 'withTrashed']);
-Route::get('attribute/{attribute}/restore', [AttributeController::class, 'restore']);
+Route::get('attribute/{id}/restore', [AttributeController::class, 'restore']);
 
-Route::get('product/{product}/withTrashed', [ProductController::class, 'withTrashed']);
-Route::get('product/{product}/restore', [ProductController::class, 'restore']);
+Route::get('product/{id}/restore', [ProductController::class, 'restore']);
 
-Route::get('parameter/{parameter}/withTrashed', [ParameterController::class, 'withTrashed']);
-Route::get('parameter/{parameter}/restore', [ParameterController::class, 'restore']);
+Route::get('parameter/{id}/restore', [ParameterController::class, 'restore']);
 
-Route::get('order/{id}/withTrashed', [OrderController::class, 'withTrashed']);
-Route::get('order/{order}/restore', [OrderController::class, 'restore']);
+Route::get('order/{id}/restore', [OrderController::class, 'restore']);
 
 
 

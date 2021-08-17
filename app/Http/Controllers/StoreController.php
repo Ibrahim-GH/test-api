@@ -104,20 +104,16 @@ class StoreController extends Controller
         }
     }
 
-    //this query didn't find our deleted data. So time to make query with withTrashed.
-    // So let's have a try
-    public function withTrashed()
-    {
-        //get back our deleted store data using withTrashed().
-        $store = Store::query()->where('id', 1)->withTrashed()->first();
-        return new StoreResource($store);
-    }
 
-    //retrieve this store data with norlam eloquent query
-    public function restore()
+    public function restore($id)
     {
-        $store = Store::query()->where('id', 1)->withTrashed()->first();
+        //this query didn't find our deleted data. So time to make query with withTrashed.
+        // So let's have a try
+        $store = Store::withTrashed()->find($id);
+
+        //retrieve this store data with norlam eloquent query
         $store->restore();
+
         return new StoreResource($store);
     }
 }
