@@ -32,4 +32,10 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
     }
+
+    //the product belong to many order
+    public function Orders()
+    {
+        return $this->belongsToMany(Order::class,'order_products');
+    }
 }

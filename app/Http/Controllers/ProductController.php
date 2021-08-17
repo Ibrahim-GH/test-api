@@ -54,7 +54,6 @@ class ProductController extends Controller
             }
             return new ProductResource($product);
         }
-
     }
 
 
@@ -86,8 +85,10 @@ class ProductController extends Controller
         $product->price = $request->price;
         $product->quantity = $request->quantity;
 
-        //in state: attribute and parameter do not exist in request do not save in foreach ...
+        //in state: attribute and parameter do not exist in request do not save in foreach
         if ($request->attributess !== null) {
+            //in state add new attribute to category :
+            // add attribute and parameter value  to product
             foreach ($request->attributess as $attribute) {
                 $productAttributeParameter = new ProductAttributeParameter();
                 $productAttributeParameter->product_id = $product->id;

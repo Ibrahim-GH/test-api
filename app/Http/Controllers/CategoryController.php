@@ -7,6 +7,7 @@ use App\Http\Requests\Category\CreateCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Http\Resources\Category\CategoryResource;
+use App\Models\Order;
 
 class CategoryController extends Controller
 {
@@ -17,7 +18,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //get retrieve cvategories records
+        //get retrieve categories records
         $categories = Category::paginate(10);
         return CategoryResource::collection($categories);
 
@@ -104,10 +105,11 @@ class CategoryController extends Controller
 
     //this query didn't find our deleted data. So time to make query with withTrashed.
     // So let's have a try
-    public function withTrashed()
+    public function withTrashed(Category $category)
     {
+//        dd('$order');
         //get back our deleted category data using withTrashed().
-        $category = Category::query()->where('id', 1)->withTrashed()->first();
+        $category = Category::query()->where('id', $id)->withTrashed()->first();
         return new CategoryResource($category);
     }
 

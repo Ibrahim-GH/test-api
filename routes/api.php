@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
@@ -24,6 +25,7 @@ Route::apiResources([
     'attribute' => AttributeController::class,
     'parameter' => ParameterController::class,
     'product' => ProductController::class,
+    'order' => OrderController::class,
 ]);
 
 Route::get('store/{store}/with-products', [StoreController::class, 'ShowStoreProducts']);
@@ -50,6 +52,8 @@ Route::get('product/{product}/restore', [ProductController::class, 'restore']);
 Route::get('parameter/{parameter}/withTrashed', [ParameterController::class, 'withTrashed']);
 Route::get('parameter/{parameter}/restore', [ParameterController::class, 'restore']);
 
+Route::get('order/{id}/withTrashed', [OrderController::class, 'withTrashed']);
+Route::get('order/{order}/restore', [OrderController::class, 'restore']);
 
 
 

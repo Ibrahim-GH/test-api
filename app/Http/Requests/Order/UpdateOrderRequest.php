@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Order;
 
+use App\Rules\CheckOrderValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
-class OrderUpdateRequest extends FormRequest
+class UpdateOrderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +29,13 @@ class OrderUpdateRequest extends FormRequest
             'itemCount' => 'numeric|between:1,100',
             'status' => 'string',
             'note' => 'max:500|string',
-            'userId' => 'exists:users,id'
+            'storeId' => 'required|exists:stores,id',
+
+            //use rule CheckOrderValidation for validation by storeId
+            'products' => ['array', new CheckOrderValidation($this->storeId)],
+            'products.*.productId' => 'required|exists:products,id',
+            'products.*.price' => 'numeric|between:1,100000',
+            'products.*.quantity' => 'numeric|between:1,100',
         ];
     }
 }

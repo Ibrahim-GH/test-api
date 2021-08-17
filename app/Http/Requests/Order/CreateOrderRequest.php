@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Order;
 
+use App\Rules\CheckOrderValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
-class OrderCreateRequest extends FormRequest
+class CreateOrderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +29,14 @@ class OrderCreateRequest extends FormRequest
             'itemCount' => 'required|numeric|between:1,100',
             'status' => 'required|string',
             'note' => 'required|max:500|string',
-            'userId' => 'required|exists:users,id'
+            'userId' => 'required|exists:users,id',
+            'storeId' => 'required|exists:stores,id',
+
+            //use rule CheckOrderValidation for validation by storeId
+            'products'=>['required','array',new CheckOrderValidation($this->storeId)],
+            'products.*.productId'=>'required|exists:products,id',
+            'products.*.price'=>'required|numeric|between:1,100000',
+            'products.*.quantity'=>'required|numeric|between:1,100',
         ];
     }
 }

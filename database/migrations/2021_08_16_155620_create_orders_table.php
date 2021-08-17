@@ -19,8 +19,8 @@ class CreateOrdersTable extends Migration
             $table->enum('status', ['pending','processing','completed','decline'])->default('pending');
             $table->integer('item_count');
             $table->text('note')->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->softDeletes();
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }

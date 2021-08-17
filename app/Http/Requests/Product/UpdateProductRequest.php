@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Product;
 
-use App\Rules\CheckValidation;
+use App\Rules\CheckProductValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProductRequest extends FormRequest
@@ -32,7 +32,7 @@ class UpdateProductRequest extends FormRequest
             'quantity' => 'integer|between:1,100',
             'categoryId' => 'exists:categories,id',
 
-            'attributess' => ['array', new CheckValidation($this->categoryId)],
+            'attributess' => ['array', new CheckProductValidation($this->categoryId)],
             'attributess.*.attributeId' => 'exists:attributes,id',
             'attributess.*.parameterId' => 'exists:parameters,id',
         ];

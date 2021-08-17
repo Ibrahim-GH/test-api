@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Order;
 
+use App\Http\Resources\Product\ProductResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderResource extends JsonResource
@@ -14,11 +15,10 @@ class OrderResource extends JsonResource
      */
     public function toArray($request)
     {
-        // return parent::toArray($request);
         return [
             'id' => $this->id,
-            'item_count' => $this->itemCount,
-            'order_number' => $this->orderNumber,
+            'itemCount' => $this->item_count,
+            'orderNumber' => $this->order_number,
             'status' => $this->status,
             'note' => $this->note,
             //this is time for softDeleted()
@@ -26,6 +26,7 @@ class OrderResource extends JsonResource
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'userId' => $this->user_id,
+            'products' => ProductResource::collection($this->whenLoaded('Products')),
         ];
     }
 }

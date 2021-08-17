@@ -6,7 +6,7 @@ use App\Models\Attribute;
 use App\Models\Parameter;
 use Illuminate\Contracts\Validation\Rule;
 
-class CheckValidation implements Rule
+class CheckProductValidation implements Rule
 {
     public $categoryId;
 
@@ -17,8 +17,7 @@ class CheckValidation implements Rule
      */
     public function __construct($categoryId)
     {
-        //dd($categoryId);
-        $this->$categoryId = $categoryId;
+        $this->categoryId = $categoryId;
     }
 
     /**
@@ -32,11 +31,11 @@ class CheckValidation implements Rule
     {
         //validation for all Items in attributess array in CreateProductRequest
         foreach ($value as $val) {
-            //get the attribute object by attributeId in CreateProductRequest
+            //get the attribute object by attributeId in request attributess
             $id = $val['attributeId'];
             $attribut = Attribute::find($id);
 
-            //get the parameter object by parameterId in request
+            //get the parameter object by parameterId in request attributess
             $id = $val['parameterId'];
             $parameter = Parameter::find($id);
 

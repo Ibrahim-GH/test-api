@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Order_Product extends Model
+class OrderProduct extends Model
 {
     protected $table = 'order_products';
 
     protected $fillable = [
-        'order_id', 'product_id',
+        'order_id', 'product_id','price','quantity',
     ];
 
     protected $hidden = [];
