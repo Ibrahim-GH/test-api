@@ -13,9 +13,10 @@ class Attribute extends Model
     protected $table = 'attributes';
 
     protected $fillable = [
-        'name', 'category_id',
+        'name', 'category_id','is_required',
     ];
 
+    //protected $casts = ['is_required' => 'boolean'];
     protected $hidden = [];
 
 

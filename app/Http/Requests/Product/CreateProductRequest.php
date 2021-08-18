@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Product;
 
+use App\Rules\CheckAttributeValidation;
 use App\Rules\CheckProductValidation;
 use App\Rules\CheckValidation;
 use Illuminate\Foundation\Http\FormRequest;
@@ -34,7 +35,9 @@ class CreateProductRequest extends FormRequest
             'storeId' => 'required|exists:stores,id',
 
             //use rule CheckProductValidation for validation by categoryId
-            'attributess' => ['required', 'array', new CheckProductValidation($this->categoryId)],
+            'attributess' => ['required', 'array',
+                new CheckProductValidation($this->categoryId),
+                new CheckAttributeValidation($this->categoryId)],
             'attributess.*.attributeId' => 'required|exists:attributes,id',
             'attributess.*.parameterId' => 'required|exists:parameters,id',
         ];

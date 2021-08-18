@@ -34,7 +34,7 @@ Route::get('category/{category}/with-products', [CategoryController::class, 'sho
 
 ######################### other routes for withTrashed then restore#################################
 
-//Route::get('user/{user}/restore', [UserController::class, 'restore']);
+//Route::get('user/{id}/restore', [UserController::class, 'restore']);
 
 Route::get('store/{id}/restore', [StoreController::class, 'restore']);
 

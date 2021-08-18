@@ -26,6 +26,7 @@ class AttributeFactory extends Factory
         return [
             // generation Attribute data with factory and faker library
             'name' => $this->faker->name(),
+            'is_required' => $this->faker->boolean(),
             'category_id' => $this->faker->randomElement($categoriesIds),
         ];
     }
