@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, softDeletes;
+    use HasApiTokens, HasFactory, Notifiable, softDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -17,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'address', 'phone_number',
+        'name', 'address', 'phone_number', 'password', 'email',
     ];
 
     /**
@@ -26,18 +28,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'remember_token',
+        'remember_token','password'
     ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-//    protected $casts = [
-//        'email_verified_at' => 'datetime',
-//    ];
-
 
     //the user has many order and order belong to one user
     public function Orders()

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttributeController;
+use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ParameterController;
@@ -49,6 +50,27 @@ Route::get('parameter/{id}/restore', [ParameterController::class, 'restore']);
 Route::get('order/{id}/restore', [OrderController::class, 'restore']);
 
 
+############# Authentication and Generate tokens for users ##############
+
+//register new user
+Route::post('/register', [AuthenticationController::class, 'createAccount']);
+//login user
+Route::post('/login', [AuthenticationController::class, 'signin']);
+//using middleware
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/profile', function(Request $request) {
+        return auth()->user();
+    });
+    Route::post('/log-out', [AuthenticationController::class, 'logout']);
+});
 
 
+
+
+
+//Route::post('/tokens/create', function (Request $request) {
+//    $token = $request->user()->createToken($request->token_name);
+//
+//    return ['token' => $token->plainTextToken];
+//});
 
