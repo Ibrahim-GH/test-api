@@ -22,12 +22,13 @@ class StoreFactory extends Factory
      */
     public function definition()
     {
+        $usersIds = User::all()->pluck('id')->toArray();
         return [
             // generation Store data with factory and faker library
             'name' => $this->faker->name(),
             'address' => $this->faker->address(),
             'phone_number' => $this->faker->unique()->phoneNumber(),
-            'user_id' => User::factory()
+            'user_id' => $this->faker->randomElement($usersIds),
         ];
     }
 }

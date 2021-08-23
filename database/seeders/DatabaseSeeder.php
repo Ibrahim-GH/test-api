@@ -16,6 +16,9 @@ class DatabaseSeeder extends Seeder
 
         ######################## generation data with Seeder #######################
 
+        //generation User data with seeder
+        $this->call(UserSeeder::class);
+
         //generation Store data with seeder
         $this->call(StoreSeeder::class);
 
