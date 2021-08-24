@@ -15,6 +15,6 @@ class ParameterSeeder extends Seeder
     public function run()
     {
         //generation Parameters data with seeder
-        Parameter::factory(150)->create();
+        Parameter::factory(24)->create();
     }
 }

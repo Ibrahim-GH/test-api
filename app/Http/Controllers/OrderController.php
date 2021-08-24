@@ -78,7 +78,7 @@ class OrderController extends Controller
      */
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        //update a specific Category record by id
+        //update a specific order record by id
         $order->order_number = $request->orderNumber;
         $order->item_count = $request->itemCount;
         $order->status = $request->status;

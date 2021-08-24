@@ -74,7 +74,6 @@ class StoreController extends Controller
      */
     public function update(UpdateStoreRequest $request, Store $store)
     {
-        //dd($request->all());
         //update a specific store record by id
         $store->name = $request->name;
         $store->address = $request->address;

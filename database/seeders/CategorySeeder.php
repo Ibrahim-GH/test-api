@@ -16,7 +16,7 @@ class CategorySeeder extends Seeder
     {
 
         //generation Category data with seeder
-          Category::factory(25)->create();
+          Category::factory(6)->create();
 
     }
 }

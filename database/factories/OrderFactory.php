@@ -22,13 +22,14 @@ class OrderFactory extends Factory
      */
     public function definition()
     {
+        $usersIds = User::all()->pluck('id')->toArray();
         return [
             // generation order data with factory and faker library
             'status' => $this->faker->randomElement($array = array('pending', 'processing', 'completed', 'decline')),
             'order_number' => $this->faker->numberBetween($int1 = 1, $int2 = 100),
             'item_count' => $this->faker->numberBetween($int1 = 1, $int2 = 100),
             'note' => $this->faker->paragraph(),
-            'user_id' => User::factory(),
+            'user_id' => $this->faker->randomElement($usersIds),
         ];
     }
 }
