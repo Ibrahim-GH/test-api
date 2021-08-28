@@ -4,51 +4,49 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\BaseController as BaseController;
 
-class AuthenticationController extends Controller
+class AuthenticationController extends BaseController
 {
     //this method adds new users
     public function createAccount(Request $request)
     {
-        $attr = $request->validate([
+        $validator = validator(request()->all(), [
             'name' => 'required|string|max:255',
-            'phoneNumber' => 'required|string|unique:users,phone_number',
+            'phone_number' => 'required|string|unique:users,phone_number',
             'address' => 'required|string|max:100',
             'email' => 'required|string|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed'
         ]);
 
-        $user = User::create([
-            'name' => $attr['name'],
-            'phone_number' => $attr['phoneNumber'],
-            'address' => $attr['address'],
-            'password' => bcrypt($attr['password']),
-            'email' => $attr['email']
-        ]);
+        if ($validator->fails()) {
+            return $this->handleError($validator->errors());
+        }
 
-        $token = $user->createToken('tokens')->plainTextToken;
+        $input = $request->all();
 
-        return $token;
+        $input['password'] = bcrypt($input['password']);
+        $user = User::create($input);
+        $success['token'] =  $user->createToken('LaravelSanctumAuth')->plainTextToken;
+
+        return $this->handleResponse($success, 'User successfully registered!');
     }
 
 
     //use this method to signin users
     public function signin(Request $request)
     {
-        $attr = $request->validate([
-            'email' => 'required|string|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-            'phoneNumber' => 'string|unique:users,phone_number',
-            'address' => 'string|max:100',
-        ]);
+        if(Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password])){
+            $user = Auth::user();
+            $success['token'] =  $user->createToken('LaravelSanctumAuth')->plainTextToken;
+            $success['name'] =  $user->name;
 
-        if (!Auth::attempt($attr)) {
-            return $this->error('Credentials not match', 401);
+            return $this->handleResponse($success, 'User logged-in!');
         }
-
-        $token = auth()->user()->createToken('API Token')->plainTextToken;
-
-        return $token;
+        else{
+            return $this->handleError   ('Unauthorised.', ['error'=>'Unauthorised']);
+        }
     }
 
 

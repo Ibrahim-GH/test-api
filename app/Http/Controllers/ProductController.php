@@ -8,9 +8,15 @@ use App\Http\Resources\Product\ProductResource;
 use App\Models\Product;
 use App\Models\ProductAttributeParameter;
 
-
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except('index', 'show');
+//        dd(auth()->id());
+        $this->authorizeResource(Product::class, 'product');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,6 +24,7 @@ class ProductController extends Controller
      */
     public function index()
     {
+
         //get retrieve Products records
         $products = Product::paginate(10);
         return ProductResource::collection($products);
@@ -124,14 +131,10 @@ class ProductController extends Controller
     }
 
 
-    public function restore($id)
+    public function restore(Product $product)
     {
-        //this query didn't find our deleted data. So time to make query with withTrashed.
-        // So let's have a try
-        $product = Product::withTrashed()->find($id);
-
         //retrieve this product data with norlam eloquent query
-        $product->restore();
+        $product->onlyTrashed()->restore();
 
         return new ProductResource($product);
     }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Requests\Category\CreateCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Http\Resources\Category\CategoryResource;
@@ -10,6 +9,15 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
+
+    public function __construct()
+    {
+        //validate auth
+        $this->middleware('auth:sanctum')->except('showCategoryProducts');
+        //implement policy on category
+        $this->authorizeResource(Category::class, 'category');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -103,12 +111,8 @@ class CategoryController extends Controller
     }
 
 
-    public function restore($id)
+    public function restore(Category $category)
     {
-        //this query didn't find our deleted data. So time to make query with withTrashed.
-        // So let's have a try
-        $category = Category::withTrashed()->find($id);
-
         //retrieve this category data with norlam eloquent query
         $category->restore();
 

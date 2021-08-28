@@ -21,9 +21,9 @@ class RoleAndPermissionSeeder extends Seeder
         // create permissions
         Permission::create(['name' => 'create-store']);
         Permission::create(['name' => 'edit-store']);
-        Permission::create(['name' => 'show-store']);
-        Permission::create(['name' => 'show-all-stores']);
-        Permission::create(['name' => 'show-store-products']);
+//        Permission::create(['name' => 'show-store']);
+//        Permission::create(['name' => 'show-all-stores']);
+//        Permission::create(['name' => 'show-store-products']);
         Permission::create(['name' => 'delete-store']);
         Permission::create(['name' => 'restore-store']);
 
@@ -56,7 +56,7 @@ class RoleAndPermissionSeeder extends Seeder
         Permission::create(['name' => 'delete-product']);
         Permission::create(['name' => 'restore-product']);
 
-        Permission::create(['name' => 'create-order']);
+        Permission::create(['name' => Permissions::CREATE_ORDER]);
         Permission::create(['name' => 'edit-order']);
         Permission::create(['name' => 'show-order']);
         Permission::create(['name' => 'show-all-orders']);
@@ -67,13 +67,13 @@ class RoleAndPermissionSeeder extends Seeder
         // create roles and assign created permissions
         // this can be done as separate statements
         $role1 = Role::create(['name' => 'super-admin']);
-        $role1->givePermissionTo(['create-store', 'show-all-stores',
+        $role1->givePermissionTo(['create-store', 'edit-store',
             'delete-store', 'restore-store']);
 
         $role2 = Role::create(['name' => 'admin']);
         $role2->givePermissionTo(
             [
-                'edit-store', 'show-store-products', 'show-store', 'delete-store', 'restore-store',
+                'edit-store',
                 'create-category', 'edit-category', 'show-category-products', 'show-category',
                 'show-all-category', 'delete-category', 'restore-category',
                 'create-attribute', 'edit-attribute', 'show-attribute', 'show-all-attributes',
@@ -89,7 +89,7 @@ class RoleAndPermissionSeeder extends Seeder
         $role3 = Role::create(['name' => 'user']);
         $role3->givePermissionTo(
             [
-                'create-order', 'delete-order','show-order',
+                'create-order', 'delete-order', 'show-order',
                 'show-all-orders', 'restore-order',
             ]);
     }

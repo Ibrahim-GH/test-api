@@ -11,6 +11,12 @@ use App\Models\Parameter;
 
 class ParameterController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+        $this->authorizeResource(Parameter::class, 'parameter');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -96,14 +102,10 @@ class ParameterController extends Controller
     }
 
 
-    public function restore($id)
+    public function restore(Parameter $parameter)
     {
-        //this query didn't find our deleted data. So time to make query with withTrashed.
-        // So let's have a try
-        $parameter = Parameter::withTrashed()->find($id);
-
         //retrieve this parameter data with norlam eloquent query
-        $parameter->restore();
+        $parameter->onlyTrashed()->restore();
 
         return new ParameterResource($parameter);
     }

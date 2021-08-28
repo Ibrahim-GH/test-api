@@ -19,6 +19,8 @@ class AttributeResource extends JsonResource
         return [
             'id' => $this->id,
             "name" => $this->name,
+            "isRequired" => $this->is_required,
+
             //this is time for softDeleted()
             'deletedAt'=>$this->deleted_at,
             'createdAt' => $this->created_at,

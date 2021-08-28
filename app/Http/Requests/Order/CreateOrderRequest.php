@@ -29,7 +29,6 @@ class CreateOrderRequest extends FormRequest
             'itemCount' => 'required|numeric|between:1,100',
             'status' => 'required|string',
             'note' => 'required|max:500|string',
-            'userId' => 'required|exists:users,id',
             'storeId' => 'required|exists:stores,id',
 
             //use rule CheckOrderValidation for validation by storeId

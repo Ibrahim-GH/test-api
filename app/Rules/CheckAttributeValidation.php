@@ -31,28 +31,29 @@ class CheckAttributeValidation implements Rule
     {
         //is required
         $category = Category::find($this->categoryId);
+
         // get all attributes from database by categoryId
         $attributes = $category->Attributes;
 
-        foreach ($attributes as $attribute) {
-            //Comparing the input items in request and the items attributes after get from database
-            foreach ($value as $val) {
+        $countAttributes = $attributes->where('is_required', 1)->count();
 
-                $id = $val['attributeId'];
-                $att = Attribute::find($id);
+        foreach ($value as $val) {
 
-                //validate from failed is_required in database
-                if ($attribute->is_required == 1) {
-                    //if The item is not included in the request ... or...
-                    // The item included(attributeId) do not equal attributeId in database
-                    if (($att->id == null) || ($attribute->id !== $att->id)) {
-                        return false;
-                    }
-                }
+            $id = $val['attributeId'];
+            $att = Attribute::find($id);
 
-                return true;
-            }
+            if ($att->is_required == 1)
+                $array[] = $att;
         }
+
+        $countAtt = count($array);
+        //validate if count attributes is_required in DB ==
+        // count attributes is_required in request->attributes array
+        if ($countAttributes == $countAtt){
+            return true;
+        }
+
+        return false;
     }
 
     /**

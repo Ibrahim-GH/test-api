@@ -10,16 +10,28 @@ use App\Models\OrderProduct;
 
 class OrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+        $this->authorizeResource(Order::class, 'order');
+    }
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
         //get retrieve orders records
         $orders = Order::paginate(10);
-        return OrderResource::collection($orders);
+        foreach ($orders as $order) {
+            if ($order->user_id == auth()->id()) {
+                $array[] = $order;
+            }
+        }
+
+        return OrderResource::collection($array);
     }
 
 
@@ -37,7 +49,7 @@ class OrderController extends Controller
         $order->item_count = $request->itemCount;
         $order->status = $request->status;
         $order->note = $request->note;
-        $order->user_id = $request->userId;
+        $order->user_id = auth()->id();
 
         if ($order->save()) {
 
@@ -76,18 +88,19 @@ class OrderController extends Controller
      * @param \App\Models\Order $order
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateOrderRequest $request, Order $order)
-    {
-        //update a specific order record by id
-        $order->order_number = $request->orderNumber;
-        $order->item_count = $request->itemCount;
-        $order->status = $request->status;
-        $order->note = $request->note;
-
-        if ($order->save()) {
-            return new OrderResource($order);
-        }
-    }
+//    public function update(UpdateOrderRequest $request, Order $order)
+//    {
+//        //update a specific order record by id
+//        $order->order_number = $request->orderNumber;
+//        $order->item_count = $request->itemCount;
+//        $order->status = $request->status;
+//        $order->note = $request->note;
+//
+//        if ($order->save()) {
+//            return new OrderResource($order);
+//        }
+//
+//    }
 
 
     /**
@@ -110,11 +123,9 @@ class OrderController extends Controller
 
 
     //retrieve this order data with norlam eloquent query
-    public function restore($id)
+    public function restore(Order $order)
     {
-        //this query didn't find our deleted data. So time to make query with withTrashed.
-        // So let's have a try
-        $order = Order::withTrashed()->find($id);
+        //retrieve this order data with norlam eloquent query
         $order->restore();
 
         return new OrderResource($order);

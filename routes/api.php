@@ -7,6 +7,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,7 +28,9 @@ Route::apiResources([
     'parameter' => ParameterController::class,
     'product' => ProductController::class,
     'order' => OrderController::class,
+    'user' => UserController::class,
 ]);
+
 
 Route::get('store/{store}/with-products', [StoreController::class, 'ShowStoreProducts']);
 Route::get('category/{category}/with-products', [CategoryController::class, 'showCategoryProducts']);
@@ -35,19 +38,19 @@ Route::get('category/{category}/with-products', [CategoryController::class, 'sho
 
 ######################### other routes for withTrashed then restore#################################
 
-//Route::get('user/{id}/restore', [UserController::class, 'restore']);
+Route::get('user/{user}/restore', [UserController::class, 'restore']);
 
-Route::get('store/{id}/restore', [StoreController::class, 'restore']);
+Route::get('store/{store}/restore', [StoreController::class, 'restore']);
 
-Route::get('category/{id}/restore', [CategoryController::class, 'restore']);
+Route::get('category/{category}/restore', [CategoryController::class, 'restore']);
 
-Route::get('attribute/{id}/restore', [AttributeController::class, 'restore']);
+Route::get('attribute/{attribute}/restore', [AttributeController::class, 'restore']);
 
-Route::get('product/{id}/restore', [ProductController::class, 'restore']);
+Route::get('product/{product}/restore', [ProductController::class, 'restore']);
 
-Route::get('parameter/{id}/restore', [ParameterController::class, 'restore']);
+Route::get('parameter/{parameter}/restore', [ParameterController::class, 'restore']);
 
-Route::get('order/{id}/restore', [OrderController::class, 'restore']);
+Route::get('order/{order}/restore', [OrderController::class, 'restore']);
 
 
 ############# Authentication and Generate tokens for users ##############
@@ -58,19 +61,11 @@ Route::post('/register', [AuthenticationController::class, 'createAccount']);
 Route::post('/login', [AuthenticationController::class, 'signin']);
 //using middleware
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('/profile', function(Request $request) {
+    Route::get('/profile', function (Request $request) {
         return auth()->user();
     });
     Route::post('/log-out', [AuthenticationController::class, 'logout']);
 });
 
 
-
-
-
-//Route::post('/tokens/create', function (Request $request) {
-//    $token = $request->user()->createToken($request->token_name);
-//
-//    return ['token' => $token->plainTextToken];
-//});
 

@@ -6,9 +6,19 @@ use App\Http\Requests\Store\CreateStoreRequest;
 use App\Http\Requests\Store\UpdateStoreRequest;
 use App\Http\Resources\Store\StoreResource;
 use App\Models\Store;
+use Auth;
 
 class StoreController extends Controller
 {
+
+    public function __construct()
+    {
+        //validate auth
+        $this->middleware('auth:sanctum')->except('index', 'show', 'ShowStoreProducts');
+        //implement policy on store
+        $this->authorizeResource(Store::class, 'store');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -104,12 +114,8 @@ class StoreController extends Controller
     }
 
 
-    public function restore($id)
+    public function restore(Store $store)
     {
-        //this query didn't find our deleted data. So time to make query with withTrashed.
-        // So let's have a try
-        $store = Store::withTrashed()->find($id);
-
         //retrieve this store data with norlam eloquent query
         $store->restore();
 

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Routing\Router;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -70,8 +71,11 @@ class Handler extends ExceptionHandler
             return $this->unauthenticated($request, $e);
         } elseif ($e instanceof ValidationException) {
             return $this->convertValidationExceptionToResponse($e, $request);
-        }
+        } elseif ($e instanceof AuthorizationException) {
 
+        $e = new AccessDeniedHttpException($e->getMessage(), $e);
+
+    }
 
         return $this->prepareJsonResponse($request, $e);
     }

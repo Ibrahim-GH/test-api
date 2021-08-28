@@ -7,10 +7,27 @@ use App\Http\Requests\Attribute\CreateAttributeRequest;
 use App\Http\Requests\Attribute\UpdateAttributeRequest;
 use App\Http\Resources\Attribute\AttributeResource;
 use App\Models\Attribute;
+use Illuminate\Support\Facades\Auth;
 
 
 class AttributeController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+        $this->authorizeResource(Attribute::class, 'attribute');
+    }
+
+//    protected function resourceAbilityMap()
+//    {
+//        $resourceAbilityMap = parent::resourceAbilityMap();
+//
+//        $resourceAbilityMap['restore'] = 'restore';
+//
+//        return $resourceAbilityMap;
+//    }
+
     /**
      * Display a listing of the resource.
      *
@@ -36,6 +53,7 @@ class AttributeController extends Controller
         //Create a new attribute record
         $attribute = new Attribute();
         $attribute->name = $request->name;
+        $attribute->is_required = $request->isRequired;
         $attribute->category_id = $request->categoryId;
 
         if ($attribute->save()) {
@@ -70,6 +88,7 @@ class AttributeController extends Controller
     {
         //update a specific Attribute record by id
         $attribute->name = $request->name;
+        $attribute->is_required = $request->isRequired;
 
         if ($attribute->save()) {
             return new AttributeResource($attribute);
@@ -96,14 +115,10 @@ class AttributeController extends Controller
     }
 
 
-    public function restore($id)
+    public function restore(Attribute $attribute)
     {
-        //this query didn't find our deleted data. So time to make query with withTrashed.
-        // So let's have a try
-        $attribute = Attribute::withTrashed()->find($id);
-
         //retrieve this attribute data with norlam eloquent query
-        $attribute->restore();
+        $attribute->onlyTrashed()->restore();
 
         return new AttributeResource($attribute);
     }

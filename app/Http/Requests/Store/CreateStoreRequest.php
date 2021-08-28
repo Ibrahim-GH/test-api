@@ -16,6 +16,10 @@ class CreateStoreRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
