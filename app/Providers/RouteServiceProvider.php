@@ -2,6 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\Attribute;
+use App\Models\Category;
+use App\Models\Order;
+use App\Models\Parameter;
+use App\Models\Product;
+use App\Models\Store;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -36,6 +43,38 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->configureRateLimiting();
+
+        parent::boot();
+
+        ########### restore model after delete for make policy #######
+        Route::bind('store', function ($id) {
+            return Store::withTrashed()->findOrFail($id);
+        });
+
+        Route::bind('category', function ($id) {
+            return Category::withTrashed()->findOrFail($id);
+        });
+
+        Route::bind('attribute', function ($id) {
+            return Attribute::withTrashed()->findOrFail($id);
+        });
+
+        Route::bind('parameter', function ($id) {
+            return Parameter::withTrashed()->findOrFail($id);
+        });
+
+        Route::bind('product', function ($id) {
+            return Product::withTrashed()->findOrFail($id);
+        });
+
+        Route::bind('order', function ($id) {
+            return Order::withTrashed()->findOrFail($id);
+        });
+
+        Route::bind('user', function ($id) {
+            return User::withTrashed()->findOrFail($id);
+        });
+        ##################### end #######################
 
         $this->routes(function () {
             Route::prefix('api')
