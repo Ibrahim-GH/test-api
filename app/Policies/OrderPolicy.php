@@ -59,8 +59,7 @@ class OrderPolicy
      */
     public function update(User $user, Order $order)
     {
-        if ($user->hasPermissionTo(PermissionName::EDIT_ORDER) &&
-            ($user->id == $order->user_id))
+        if ($user->hasPermissionTo(PermissionName::EDIT_ORDER))
             return true;
     }
 

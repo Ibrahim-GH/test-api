@@ -7,6 +7,12 @@ use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\Store;
+use App\Models\User;
+use App\Notifications\SendToAdminNotification;
+use App\Notifications\SendToUserNotification;
+use Illuminate\Support\Facades\Notification;
+
 
 class OrderController extends Controller
 {
@@ -51,18 +57,29 @@ class OrderController extends Controller
         $order->note = $request->note;
         $order->user_id = auth()->id();
 
-        if ($order->save()) {
+        $id = $request->storeId;
+        $store = Store::find($id);
+        $adminId = $store->user->id;
+        if (auth()->id() !== $adminId) {
+            if ($order->save()) {
 
-            foreach ($request->products as $item) {
-                $orderproduct = new OrderProduct();
-                $orderproduct->order_id = $order->id;
-                $orderproduct->product_id = $item['productId'];
-                $orderproduct->price = $item['price'];
-                $orderproduct->quantity = $item['quantity'];
+                foreach ($request->products as $item) {
+                    $orderproduct = new OrderProduct();
+                    $orderproduct->order_id = $order->id;
+                    $orderproduct->product_id = $item['productId'];
+                    $orderproduct->price = $item['price'];
+                    $orderproduct->quantity = $item['quantity'];
 
-                $orderproduct->save();
+                    $orderproduct->save();
+                }
+
+                $admin = User::find($adminId);
+                Notification::send($admin, new SendToAdminNotification($order));
+
+                return new OrderResource($order);
             }
-            return new OrderResource($order);
+        } else {
+            abort(400, 'the store owner can not create order from his store');
         }
     }
 
@@ -88,19 +105,28 @@ class OrderController extends Controller
      * @param \App\Models\Order $order
      * @return \Illuminate\Http\Response
      */
-//    public function update(UpdateOrderRequest $request, Order $order)
-//    {
-//        //update a specific order record by id
-//        $order->order_number = $request->orderNumber;
-//        $order->item_count = $request->itemCount;
-//        $order->status = $request->status;
-//        $order->note = $request->note;
-//
-//        if ($order->save()) {
-//            return new OrderResource($order);
-//        }
-//
-//    }
+    public function update(UpdateOrderRequest $request, Order $order)
+    {
+        //update a specific order record by id
+        $order->status = $request->status;
+
+        $id = $request->storeId;
+        $store = Store::find($id);
+        $adminId = $store->user->id;
+        if (auth()->id() == $adminId) {
+
+            if ($order->save()) {
+
+                $userId = $order->user_id;
+                $user = User::find($userId);
+                Notification::send($user, new SendToUserNotification($order));
+
+                return new OrderResource($order);
+            }
+        } else {
+            abort(400, ' auth user must be the store owner ');
+        }
+    }
 
 
     /**
@@ -116,8 +142,16 @@ class OrderController extends Controller
 //        Instead, a deleted_at attribute is set on the model and inserted into the database.
 //        If a model has a non-null deleted_at value, the model has been soft deleted
 
-        if ($order->delete()) {
-            return new OrderResource($order);
+        $id = $order->store_id;
+        $sId = Store::find($id);
+        $admin = $sId->user->id;
+        if (auth()->id() == $admin) {
+
+            if ($order->delete()) {
+                return new OrderResource($order);
+            }
+        } else {
+            abort(400, 'the user can not delete this order');
         }
     }
 
@@ -126,8 +160,16 @@ class OrderController extends Controller
     public function restore(Order $order)
     {
         //retrieve this order data with norlam eloquent query
-        $order->restore();
 
-        return new OrderResource($order);
+        $id = $order->store_id;
+        $sId = Store::find($id);
+        $admin = $sId->user->id;
+        if (auth()->id() == $admin) {
+
+            $order->restore();
+            return new OrderResource($order);
+        } else {
+            abort(400, 'the user can not delete order');
+        }
     }
 }
