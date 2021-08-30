@@ -19,6 +19,7 @@ class CreateProductsTable extends Migration
             $table->text('description');
             $table->float('price');
             $table->integer('quantity');
+            $table->string('photo')->nullable();
             $table->softDeletes();
             $table->foreignId('store_id')->references('id')->on('stores')->onDelete('cascade');
             $table->foreignId('category_id')->references('id')->on('categories')->onDelete('cascade');

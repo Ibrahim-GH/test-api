@@ -3,6 +3,7 @@
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\ProductController;
@@ -31,7 +32,6 @@ Route::apiResources([
     'user' => UserController::class,
 ]);
 
-
 Route::get('store/{store}/with-products', [StoreController::class, 'ShowStoreProducts']);
 Route::get('category/{category}/with-products', [CategoryController::class, 'showCategoryProducts']);
 
@@ -53,7 +53,7 @@ Route::get('parameter/{parameter}/restore', [ParameterController::class, 'restor
 Route::get('order/{order}/restore', [OrderController::class, 'restore']);
 
 
-############# Authentication and Generate tokens for users ##############
+############# Routes Authentication and Generate tokens for users ##############
 
 //register new user
 Route::post('/register', [AuthenticationController::class, 'createAccount']);
@@ -68,4 +68,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 });
 
 
+// route notifications
+Route::get('notification/all', [NotificationController::class, 'index']);
+Route::delete('notification/{user}/delete', [NotificationController::class, 'destroy']);
+Route::post('notification/{user}/readNotifications', [NotificationController::class, 'ReadNotifications']);
 

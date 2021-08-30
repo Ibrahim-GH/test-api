@@ -7,6 +7,7 @@ use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\Product\ProductResource;
 use App\Models\Product;
 use App\Models\ProductAttributeParameter;
+use App\Models\Store;
 
 class ProductController extends Controller
 {
@@ -42,24 +43,33 @@ class ProductController extends Controller
     {
         //Create a new product record
         $product = new Product();
+
+        $file_name = $this->saveImage($request->photo, 'Storages/Products');
+
         $product->name = $request->name;
         $product->description = $request->description;
         $product->price = $request->price;
         $product->quantity = $request->quantity;
         $product->category_id = $request->categoryId;
         $product->store_id = $request->storeId;
+        $product->photo = isset($file_name) ? '/Storages/Products/' . $file_name : null;
 
-        if ($product->save()) {
+        $store = Store::find($request->storeId);
+        if (auth()->id() == $store->user->id) {
+            if ($product->save()) {
 
-            foreach ($request->attributess as $attribute) {
-                $productAttributeParameter = new ProductAttributeParameter();
-                $productAttributeParameter->product_id = $product->id;
-                $productAttributeParameter->attribute_id = $attribute['attributeId'];
-                $productAttributeParameter->parameter_id = $attribute['parameterId'];
+                foreach ($request->attributess as $attribute) {
+                    $productAttributeParameter = new ProductAttributeParameter();
+                    $productAttributeParameter->product_id = $product->id;
+                    $productAttributeParameter->attribute_id = $attribute['attributeId'];
+                    $productAttributeParameter->parameter_id = $attribute['parameterId'];
 
-                $productAttributeParameter->save();
+                    $productAttributeParameter->save();
+                }
+                return new ProductResource($product);
             }
-            return new ProductResource($product);
+        } else {
+            abort(400, 'the Auth user do not store owner');
         }
     }
 
@@ -106,8 +116,14 @@ class ProductController extends Controller
             }
         }
 
-        if ($product->save()) {
-            return new ProductResource($product);
+        $store = Store::find($product->store_id);
+        if (auth()->id() == $store->user->id) {
+
+            if ($product->save()) {
+                return new ProductResource($product);
+            }
+        } else {
+            abort(400, 'the Auth user do not store owner');
         }
     }
 
@@ -125,8 +141,14 @@ class ProductController extends Controller
 //        Instead, a deleted_at attribute is set on the model and inserted into the database.
 //        If a model has a non-null deleted_at value, the model has been soft deleted
 
-        if ($product->delete()) {
-            return new ProductResource($product);
+        $store = Store::find($product->store_id);
+        if (auth()->id() == $store->user->id) {
+
+            if ($product->delete()) {
+                return new ProductResource($product);
+            }
+        } else {
+            abort(400, 'the Auth user do not store owner');
         }
     }
 
@@ -134,8 +156,25 @@ class ProductController extends Controller
     public function restore(Product $product)
     {
         //retrieve this product data with norlam eloquent query
-        $product->onlyTrashed()->restore();
 
+        $store = Store::find($product->store_id);
+        if (auth()->id() == $store->user->id) {
+            $product->restore();
+        } else {
+            abort(400, 'the Auth user do not store owner');
+        }
         return new ProductResource($product);
     }
+
+
+    function saveImage($photo,$folder){
+        //save photo in folder
+        $file_extension = $photo -> getClientOriginalExtension();
+        $file_name = time().'.'.$file_extension;
+        $path = $folder;
+        $photo -> move($path,$file_name);
+
+        return $file_name;
+    }
+
 }

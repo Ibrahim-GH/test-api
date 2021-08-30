@@ -19,15 +19,6 @@ class AttributeController extends Controller
         $this->authorizeResource(Attribute::class, 'attribute');
     }
 
-//    protected function resourceAbilityMap()
-//    {
-//        $resourceAbilityMap = parent::resourceAbilityMap();
-//
-//        $resourceAbilityMap['restore'] = 'restore';
-//
-//        return $resourceAbilityMap;
-//    }
-
     /**
      * Display a listing of the resource.
      *
@@ -50,6 +41,7 @@ class AttributeController extends Controller
      */
     public function store(CreateAttributeRequest $request)
     {
+
         //Create a new attribute record
         $attribute = new Attribute();
         $attribute->name = $request->name;

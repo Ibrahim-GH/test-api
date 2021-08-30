@@ -33,6 +33,14 @@ class Store extends Model
         return $this->hasMany(Product::class, 'store_id', 'id');
     }
 
+    /**
+     * Get the user that owns the store.
+     */
+    //the user has many product and product belong to one user
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 
     // this is a recommended way to declare event handlers
 //    public static function boot()

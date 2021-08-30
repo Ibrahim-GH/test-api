@@ -31,6 +31,7 @@ class CreateProductRequest extends FormRequest
             'description' => 'required|string|max:500',
             'price' => 'required|nullable|numeric|between:1,100000',
             'quantity' => 'required|integer|between:1,100',
+            'photo' => 'file|nullable',
             'categoryId' => 'required|exists:categories,id',
             'storeId' => 'required|exists:stores,id',
 

@@ -37,4 +37,12 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Order::class, 'user_id', 'id');
     }
+
+    /**
+     * Get the store record associated with the user.
+     */
+    public function store()
+    {
+        return $this->hasOne(Store::class);
+    }
 }

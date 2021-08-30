@@ -20,7 +20,6 @@ class ProductPolicy
      */
     public function viewAny(?User $user)
     {
-//        dd($user);
         return true;
     }
 
@@ -33,7 +32,6 @@ class ProductPolicy
      */
     public function view(?User $user, Product $product)
     {
-//        dd($user);
         return true;
     }
 

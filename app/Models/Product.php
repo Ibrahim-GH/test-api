@@ -14,7 +14,7 @@ class Product extends Model
     protected $table = 'Products';
 
     protected $fillable = [
-        'name', 'store_id', 'category_id', 'description', 'price', 'quantity'
+        'name', 'store_id', 'category_id', 'description', 'price', 'quantity','photo'
     ];
 
     protected $hidden = [];

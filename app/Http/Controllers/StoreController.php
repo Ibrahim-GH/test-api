@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PermissionName;
 use App\Http\Requests\Store\CreateStoreRequest;
 use App\Http\Requests\Store\UpdateStoreRequest;
 use App\Http\Resources\Store\StoreResource;

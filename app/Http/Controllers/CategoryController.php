@@ -6,10 +6,10 @@ use App\Http\Requests\Category\CreateCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Http\Resources\Category\CategoryResource;
 use App\Models\Category;
+use App\Models\Store;
 
 class CategoryController extends Controller
 {
-
     public function __construct()
     {
         //validate auth
@@ -45,10 +45,14 @@ class CategoryController extends Controller
         $category->name = $request->name;
         $category->store_id = $request->storeId;
 
-        if ($category->save()) {
-            return new CategoryResource($category);
+        $store = Store::find($request->storeId);
+        if (auth()->id() == $store->user->id) {
+            if ($category->save()) {
+                return new CategoryResource($category);
+            }
+        } else {
+            abort(400, 'the Auth user do not store owner ');
         }
-
     }
 
 
@@ -86,8 +90,14 @@ class CategoryController extends Controller
         //update a specific Category record by id
         $category->name = $request->name;
 
-        if ($category->save()) {
-            return new CategoryResource($category);
+        $store = Store::find($category->store_d);
+        if (auth()->id() == $store->user->id) {
+
+            if ($category->save()) {
+                return new CategoryResource($category);
+            }
+        } else {
+            abort(400, 'the Auth user do not store owner ');
         }
     }
 
@@ -105,17 +115,27 @@ class CategoryController extends Controller
 //        Instead, a deleted_at attribute is set on the model and inserted into the database.
 //        If a model has a non-null deleted_at value, the model has been soft deleted
 
-        if ($category->delete()) {
-            return new CategoryResource($category);
+        $store = Store::find($category->store_d);
+        if (auth()->id() == $store->user->id) {
+
+            if ($category->delete()) {
+                return new CategoryResource($category);
+            } else {
+                abort(400, 'the Auth user do not store owner ');
+            }
         }
     }
 
-
-    public function restore(Category $category)
+    public
+    function restore(Category $category)
     {
         //retrieve this category data with norlam eloquent query
-        $category->restore();
-
+        $store = Store::find($category->store_d);
+        if (auth()->id() == $store->user->id) {
+                $category->restore();
+            } else {
+                abort(400, 'the Auth user do not store owner ');
+            }
         return new CategoryResource($category);
     }
 }

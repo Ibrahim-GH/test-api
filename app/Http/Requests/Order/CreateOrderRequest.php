@@ -25,8 +25,8 @@ class CreateOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'orderNumber' => 'required|numeric|between:1,100',
-            'itemCount' => 'required|numeric|between:1,100',
+            'orderNumber' => 'required|numeric',
+            'itemCount' => 'required|numeric',
             'status' => 'required|string',
             'note' => 'required|max:500|string',
             'storeId' => 'required|exists:stores,id',

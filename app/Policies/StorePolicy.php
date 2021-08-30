@@ -19,7 +19,7 @@ class StorePolicy
      */
     public function viewAny(?User $user)
     {
-        //
+        return true;
     }
 
     /**
@@ -31,7 +31,7 @@ class StorePolicy
      */
     public function view(?User $user, Store $store)
     {
-        //
+        return true;
     }
 
     /**
