@@ -12,9 +12,7 @@ class CategoryController extends Controller
 {
     public function __construct()
     {
-        //validate auth
-        $this->middleware('auth:sanctum')->except('showCategoryProducts');
-        //implement policy on category
+        $this->middleware('auth:sanctum')->except('index', 'show');
         $this->authorizeResource(Category::class, 'category');
     }
 
@@ -40,12 +38,12 @@ class CategoryController extends Controller
      */
     public function store(CreateCategoryRequest $request)
     {
-        //create a new Category record
         $category = new Category();
         $category->name = $request->name;
         $category->store_id = $request->storeId;
 
         $store = Store::find($request->storeId);
+
         if (auth()->id() == $store->user->id) {
             if ($category->save()) {
                 return new CategoryResource($category);
@@ -64,7 +62,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //get specific category record by id
+        //get specific category record by id with attributes are belongs its
         $category->load(['Attributes']);
         return new CategoryResource($category);
     }
@@ -87,12 +85,11 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        //update a specific Category record by id
         $category->name = $request->name;
 
-        $store = Store::find($category->store_d);
-        if (auth()->id() == $store->user->id) {
+        $store = Store::find($category->store_id);
 
+        if (auth()->id() == $store->user->id) {
             if ($category->save()) {
                 return new CategoryResource($category);
             }
@@ -110,16 +107,14 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-//        delete a category by softDelete .
-//        you are not actually removed from your database.
-//        Instead, a deleted_at attribute is set on the model and inserted into the database.
-//        If a model has a non-null deleted_at value, the model has been soft deleted
+        //delete a category by softDelete
+        $store = Store::find($category->store_id);
 
-        $store = Store::find($category->store_d);
         if (auth()->id() == $store->user->id) {
-
             if ($category->delete()) {
+
                 return new CategoryResource($category);
+
             } else {
                 abort(400, 'the Auth user do not store owner ');
             }
@@ -129,13 +124,13 @@ class CategoryController extends Controller
     public
     function restore(Category $category)
     {
-        //retrieve this category data with norlam eloquent query
-        $store = Store::find($category->store_d);
+        $store = Store::find($category->store_id);
+
         if (auth()->id() == $store->user->id) {
-                $category->restore();
-            } else {
-                abort(400, 'the Auth user do not store owner ');
-            }
+            $category->restore();
+        } else {
+            abort(400, 'the Auth user do not store owner ');
+        }
         return new CategoryResource($category);
     }
 }

@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
         //generation user data with seeder
 //        User::factory(5)->create();
 
+        /** @var User $superAdmin */
         $superAdmin = User::create([
             'name' => 'super-admin',
             'address' => 'damascus1',
@@ -41,35 +42,11 @@ class UserSeeder extends Seeder
             'password' => bcrypt('user123'),
         ]);
 
-        // You can also assign multiple roles at once
+        // You can assign multiple roles at user
         $superAdmin->assignRole('super-admin', 'admin', 'user');
         $admin->assignRole('admin', 'user');
         $user->assignRole('user');
 
-        $permissions = [
-            'edit-store',
-            'create-category', 'edit-category', 'show-category-products', 'show-category',
-            'show-all-category', 'delete-category', 'restore-category',
-            'create-attribute', 'edit-attribute', 'show-attribute', 'show-all-attributes',
-            'delete-attribute', 'restore-attribute',
-            'create-parameter', 'edit-parameter', 'show-all-parameters', 'show-parameter',
-            'delete-parameter', 'restore-parameter',
-            'create-product', 'edit-product', 'show-all-products', 'show-product',
-            'delete-product', 'restore-product',
-            'create-order', 'show-all-orders', 'show-order',
-            'delete-order', 'restore-order',
-        ];
-
-        // You can also assign multiple permission at once
-        $superAdmin->givePermissionTo('create-store', 'delete-store',
-            'restore-store', 'delete-user', 'restore-user', $permissions);
-
-        $admin->givePermissionTo($permissions);
-
-        $user->givePermissionTo(
-            [
-                'create-order', 'show-order', 'show-all-orders',
-            ]);
     }
 }
 

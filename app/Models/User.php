@@ -23,6 +23,8 @@ class User extends Authenticatable
         'name', 'address', 'phone_number', 'password', 'email',
     ];
 
+    protected $guard_name = 'sanctum';
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -32,17 +34,14 @@ class User extends Authenticatable
         'remember_token', 'password'
     ];
 
-    //the user has many order and order belong to one user
     public function Orders()
     {
         return $this->belongsTo(Order::class, 'user_id', 'id');
     }
 
-    /**
-     * Get the store record associated with the user.
-     */
     public function store()
     {
         return $this->hasOne(Store::class);
     }
+
 }

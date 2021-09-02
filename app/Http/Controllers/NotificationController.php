@@ -28,11 +28,12 @@ class NotificationController extends Controller
     public function ReadNotifications(User $user)
     {
         if (auth()->id() == $user->id) {
+
             foreach ($user->unreadNotifications as $notification) {
                 $notification->markAsRead();
-
                 return "success the notifications read for user : " . $user->name;
             }
+
         } else {
             abort(400, ' auth user must be the notifications owner ');
         }
@@ -47,10 +48,8 @@ class NotificationController extends Controller
      */
     public function destroy(User $user)
     {
-        dd($user);
         if (auth()->id() == $user->id) {
             $user->notifications()->delete();
-
             return "success the notifications delete for user : " . $user->name;
         } else {
             abort(400, ' auth user must be the notification owner ');

@@ -29,8 +29,8 @@ class CheckProductValidation implements Rule
      */
     public function passes($attribute, $value)
     {
-        //validation for all Items in attributess array in CreateProductRequest
         foreach ($value as $val) {
+
             //get the attribute object by attributeId in request attributess
             $id = $val['attributeId'];
             $attribut = Attribute::find($id);
@@ -39,10 +39,13 @@ class CheckProductValidation implements Rule
             $id = $val['parameterId'];
             $parameter = Parameter::find($id);
 
+            //validation for all Items in attributess array in CreateProductRequest
             if (($attribut->category_id !== $this->categoryId)
                 && ($parameter->attribute_id !== $attribut->id)) {
+
                 return false;
             }
+
             return true;
         }
     }

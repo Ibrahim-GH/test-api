@@ -58,6 +58,8 @@ class SendToUserNotification extends Notification
     public function toArray($notifiable)
     {
         return [
+            'orderNumber' => $this->order->order_number,
+            'itemCount' => $this->order->item_count,
             'status' => $this->order->status,
         ];
     }

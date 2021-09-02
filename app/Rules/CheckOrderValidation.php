@@ -28,13 +28,14 @@ class CheckOrderValidation implements Rule
      */
     public function passes($attribute, $value)
     {
-        //validation for all Items in products array in CreateOrderRequest
+        //validation for all products array in CreateOrderRequest
         foreach ($value as $val) {
 
             //get the product object by productId in request products
             $id = $val['productId'];
             $product = Product::find($id);
 
+            //validation if order and product are belongs To store self
             if ($product->store_id == $this->storeId) {
                 return true;
             }

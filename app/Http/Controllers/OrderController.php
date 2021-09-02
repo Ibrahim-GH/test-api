@@ -49,7 +49,6 @@ class OrderController extends Controller
      */
     public function store(CreateOrderRequest $request)
     {
-        //create a new order record
         $order = new Order();
         $order->order_number = $request->orderNumber;
         $order->item_count = $request->itemCount;
@@ -61,6 +60,7 @@ class OrderController extends Controller
         $store = Store::find($id);
         $adminId = $store->user->id;
         if (auth()->id() !== $adminId) {
+
             if ($order->save()) {
 
                 foreach ($request->products as $item) {
@@ -78,6 +78,7 @@ class OrderController extends Controller
 
                 return new OrderResource($order);
             }
+
         } else {
             abort(400, 'the store owner can not create order from his store');
         }
@@ -92,7 +93,6 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        //get specific order record by id
         $order->load(['Products']);
         return new OrderResource($order);
     }
@@ -107,7 +107,6 @@ class OrderController extends Controller
      */
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        //update a specific order record by id
         $order->status = $request->status;
 
         $id = $request->storeId;
@@ -137,11 +136,6 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-//        delete a order by softDelete .
-//        you are not actually removed from your database.
-//        Instead, a deleted_at attribute is set on the model and inserted into the database.
-//        If a model has a non-null deleted_at value, the model has been soft deleted
-
         $id = $order->store_id;
         $sId = Store::find($id);
         $admin = $sId->user->id;
@@ -150,26 +144,26 @@ class OrderController extends Controller
             if ($order->delete()) {
                 return new OrderResource($order);
             }
+
         } else {
             abort(400, 'the user can not delete this order');
         }
     }
 
 
-    //retrieve this order data with norlam eloquent query
     public function restore(Order $order)
     {
-        //retrieve this order data with norlam eloquent query
-
         $id = $order->store_id;
-        $sId = Store::find($id);
-        $admin = $sId->user->id;
+        $store = Store::find($id);
+        $admin = $store->user->id;
         if (auth()->id() == $admin) {
 
             $order->restore();
             return new OrderResource($order);
+
         } else {
             abort(400, 'the user can not delete order');
         }
     }
+
 }

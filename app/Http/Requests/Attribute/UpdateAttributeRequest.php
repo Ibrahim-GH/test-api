@@ -26,6 +26,7 @@ class UpdateAttributeRequest extends FormRequest
         return [
             'name' => 'string|max:30',
             'is_required' => 'boolean',
+            'storeId' => 'required|exists:stores,id',
         ];
     }
 }

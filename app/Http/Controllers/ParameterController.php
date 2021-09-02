@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Parameter\CreateParameterRequest;
 use App\Http\Requests\Parameter\UpdateParameterRequest;
+use App\Http\Resources\Attribute\AttributeResource;
 use App\Http\Resources\Parameter\ParameterResource;
+use App\Models\Attribute;
+use App\Models\Category;
 use App\Models\Parameter;
+use App\Models\Store;
 
 
 class ParameterController extends Controller
@@ -24,7 +28,6 @@ class ParameterController extends Controller
      */
     public function index()
     {
-        //get retrieve parameters records
         $parameters = Parameter::paginate(10);
         return ParameterResource::collection($parameters);
     }
@@ -38,15 +41,20 @@ class ParameterController extends Controller
      */
     public function store(CreateParameterRequest $request)
     {
-        //Create a new parameter record
         $parameter = new Parameter();
         $parameter->name = $request->name;
         $parameter->attribute_id = $request->attributeId;
 
-        if ($parameter->save()) {
-            return new ParameterResource($parameter);
-        }
+        $userId =   $parameter->Attribute->Category->store->user_id;
 
+        if (auth()->id() == $userId) {
+
+            if ($parameter->save()) {
+                return new ParameterResource($parameter);
+            }
+        } else {
+            abort(400, 'the Auth user do not store owner');
+        }
     }
 
 
@@ -58,7 +66,6 @@ class ParameterController extends Controller
      */
     public function show($id)
     {
-        //get specific parameter record by id
         $parameter = Parameter::findOrfail($id);
         return new ParameterResource($parameter);
     }
@@ -73,12 +80,17 @@ class ParameterController extends Controller
      */
     public function update(UpdateParameterRequest $request, $id)
     {
-        //update a specific Attribute record by id
         $parameter = Parameter::findOrfail($id);
         $parameter->name = $request->name;
 
-        if ($parameter->save()) {
-            return new ParameterResource($parameter);
+        $userId =   $parameter->Attribute->Category->store->user_id;
+        if (auth()->id() == $userId) {
+
+            if ($parameter->save()) {
+                return new ParameterResource($parameter);
+            }
+        } else {
+            abort(400, 'the Auth user do not store owner');
         }
     }
 
@@ -91,22 +103,30 @@ class ParameterController extends Controller
      */
     public function destroy(Parameter $parameter)
     {
-//        delete a parameter by softDelete .
-//        you are not actually removed from your database.
-//        Instead, a deleted_at attribute is set on the model and inserted into the database.
-//        If a model has a non-null deleted_at value, the model has been soft deleted
+        //delete a parameter by softDelete .
+        $userId =   $parameter->Attribute->Category->store->user_id;
 
-        if ($parameter->delete()) {
-            return new ParameterResource($parameter);
+        if (auth()->id() == $userId) {
+
+            if ($parameter->delete()) {
+                return new ParameterResource($parameter);
+            }
+        } else {
+            abort(400, 'the Auth user do not store owner');
         }
     }
 
 
     public function restore(Parameter $parameter)
     {
-        //retrieve this parameter data with norlam eloquent query
-        $parameter->onlyTrashed()->restore();
 
-        return new ParameterResource($parameter);
+        $userId =   $parameter->Attribute->Category->store->user_id;
+
+        if (auth()->id() == $userId) {
+            $parameter->restore();
+            return new ParameterResource($parameter);
+        } else {
+            abort(400, 'the Auth user do not store owner');
+        }
     }
 }

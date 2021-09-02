@@ -14,28 +14,26 @@ class Product extends Model
     protected $table = 'Products';
 
     protected $fillable = [
-        'name', 'store_id', 'category_id', 'description', 'price', 'quantity','photo'
+        'name', 'store_id', 'category_id', 'description', 'price', 'quantity', 'photo'
     ];
 
     protected $hidden = [];
 
     ########################### The Relation for Product ###############################
 
-    //the store has many product and product belong to one store
     public function Stoer()
     {
         return $this->belongsTo(store::class, 'store_id', 'id');
     }
 
-    //the category has many product and product belong to one category
     public function Category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
-    //the product belong to many order
     public function Orders()
     {
-        return $this->belongsToMany(Order::class,'order_products');
+        return $this->belongsToMany(Order::class, 'order_products');
     }
+
 }

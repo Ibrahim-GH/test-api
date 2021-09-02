@@ -18,14 +18,11 @@ class Order extends Model
 
     protected $hidden = [];
 
-
-    //the user has many order and order belong to one user
     public function User()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    //the order belong to many product
     public function Products()
     {
         return $this->belongsToMany(Product::class, 'order_products');

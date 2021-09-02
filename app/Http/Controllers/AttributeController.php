@@ -7,7 +7,6 @@ use App\Http\Requests\Attribute\CreateAttributeRequest;
 use App\Http\Requests\Attribute\UpdateAttributeRequest;
 use App\Http\Resources\Attribute\AttributeResource;
 use App\Models\Attribute;
-use Illuminate\Support\Facades\Auth;
 
 
 class AttributeController extends Controller
@@ -26,7 +25,6 @@ class AttributeController extends Controller
      */
     public function index()
     {
-        //get retrieve attributes records
         $attributes = Attribute::paginate(10);
         return AttributeResource::collection($attributes);
 
@@ -48,10 +46,16 @@ class AttributeController extends Controller
         $attribute->is_required = $request->isRequired;
         $attribute->category_id = $request->categoryId;
 
-        if ($attribute->save()) {
-            return new AttributeResource($attribute);
-        }
+        $userId = $attribute->Category->store->user_id;
 
+        if (auth()->id() == $userId) {
+
+            if ($attribute->save()) {
+                return new AttributeResource($attribute);
+            }
+        } else {
+            abort(400, 'the Auth user do not store owner');
+        }
     }
 
 
@@ -63,7 +67,7 @@ class AttributeController extends Controller
      */
     public function show(Attribute $attribute)
     {
-        //get specific Attribute record by id
+        //get specific Attribute record by id  with parameters are belongs its
         $attribute->load('Parameters');
         return new AttributeResource($attribute);
     }
@@ -78,12 +82,17 @@ class AttributeController extends Controller
      */
     public function update(UpdateAttributeRequest $request, Attribute $attribute)
     {
-        //update a specific Attribute record by id
         $attribute->name = $request->name;
         $attribute->is_required = $request->isRequired;
 
-        if ($attribute->save()) {
-            return new AttributeResource($attribute);
+        $userId = $attribute->Category->store->user_id;
+        if (auth()->id() == $userId) {
+
+            if ($attribute->save()) {
+                return new AttributeResource($attribute);
+            }
+        } else {
+            abort(400, 'the Auth user do not store owner');
         }
     }
 
@@ -96,22 +105,31 @@ class AttributeController extends Controller
      */
     public function destroy(Attribute $attribute)
     {
-//        delete a attribute by softDelete .
-//        you are not actually removed from your database.
-//        Instead, a deleted_at attribute is set on the model and inserted into the database.
-//        If a model has a non-null deleted_at value, the model has been soft deleted
+        //delete a attribute by softDelete .
+        $userId = $attribute->Category->store->user_id;
 
-        if ($attribute->delete()) {
-            return new AttributeResource($attribute);
+        if (auth()->id() == $userId) {
+
+            if ($attribute->delete()) {
+                return new AttributeResource($attribute);
+            }
+        } else {
+            abort(400, 'the Auth user do not store owner');
         }
+
     }
 
 
     public function restore(Attribute $attribute)
     {
-        //retrieve this attribute data with norlam eloquent query
-        $attribute->onlyTrashed()->restore();
+        $userId = $attribute->Category->store->user_id;
 
-        return new AttributeResource($attribute);
+        if (auth()->id() == $userId) {
+
+            $attribute->restore();
+            return new AttributeResource($attribute);
+        } else {
+            abort(400, 'the Auth user do not store owner');
+        }
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\PermissionName;
 use App\Http\Requests\Store\CreateStoreRequest;
 use App\Http\Requests\Store\UpdateStoreRequest;
 use App\Http\Resources\Store\StoreResource;
@@ -14,9 +13,7 @@ class StoreController extends Controller
 
     public function __construct()
     {
-        //validate auth
-        $this->middleware('auth:sanctum')->except('index', 'show', 'ShowStoreProducts');
-        //implement policy on store
+        $this->middleware('auth:sanctum')->except('index', 'show');
         $this->authorizeResource(Store::class, 'store');
     }
 
@@ -41,15 +38,18 @@ class StoreController extends Controller
      */
     public function store(CreateStoreRequest $request)
     {
-        //create a new store record
         $store = new Store();
         $store->name = $request->name;
         $store->address = $request->address;
         $store->phone_number = $request->phoneNumber;
         $store->user_id = $request->userId;
 
-        if ($store->save()) {
-            return new StoreResource($store);
+        if (auth()->id() == $request->userId) {
+            if ($store->save()) {
+                return new StoreResource($store);
+            }
+        } else {
+            abort(400, 'the Auth user do not store owner ');
         }
     }
 
@@ -62,7 +62,7 @@ class StoreController extends Controller
      */
     public function show(Store $store)
     {
-        //get specific store record by id
+        //get specific store record with attributes are belongs its
         $store->load(['Categories']);
         return new StoreResource($store);
     }
@@ -85,13 +85,16 @@ class StoreController extends Controller
      */
     public function update(UpdateStoreRequest $request, Store $store)
     {
-        //update a specific store record by id
         $store->name = $request->name;
         $store->address = $request->address;
         $store->phone_number = $request->phoneNumber;
 
-        if ($store->save()) {
-            return new StoreResource($store);
+        if (auth()->id() == $request->userId) {
+            if ($store->save()) {
+                return new StoreResource($store);
+            }
+        } else {
+            abort(400, 'the Auth user do not store owner ');
         }
     }
 
@@ -104,22 +107,27 @@ class StoreController extends Controller
      */
     public function destroy(Store $store)
     {
-//        delete a store by softDelete .
-//        you are not actually removed from your database.
-//        Instead, a deleted_at attribute is set on the model and inserted into the database.
-//        If a model has a non-null deleted_at value, the model has been soft deleted
+        //delete a store by softDelete
+        if (auth()->id() == $store->user_id) {
 
-        if ($store->delete()) {
-            return new StoreResource($store);
+            if ($store->delete()) {
+                return new StoreResource($store);
+            }
+
+        } else {
+            abort(400, 'the Auth user do not store owner ');
         }
     }
 
 
     public function restore(Store $store)
     {
-        //retrieve this store data with norlam eloquent query
-        $store->restore();
+        if (auth()->id() == $store->user_id) {
+            $store->restore();
+            return new StoreResource($store);
 
-        return new StoreResource($store);
+        } else {
+            abort(400, 'the Auth user do not store owner ');
+        }
     }
 }

@@ -11,7 +11,7 @@ use BenSampo\Enum\Enum;
  */
 final class PermissionName extends Enum
 {
-    const CREATE_STORE = 'create-order';
+    const CREATE_STORE = 'create-store';
     const EDIT_STORE = 'edit-store';
     const DELETE_STORE = 'delete-store';
     const RESTORE_STORE = 'restore-store';

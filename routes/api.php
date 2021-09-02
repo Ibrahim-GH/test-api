@@ -73,3 +73,7 @@ Route::get('notification/all', [NotificationController::class, 'index']);
 Route::delete('notification/{user}/delete', [NotificationController::class, 'destroy']);
 Route::post('notification/{user}/readNotifications', [NotificationController::class, 'ReadNotifications']);
 
+// route users
+Route::get('user/{user}/all', [UserController::class, 'index']);
+Route::delete('user/{user}/delete', [UserController::class, 'destroy']);
+Route::post('user/{user}/restore', [UserController::class, 'restore']);

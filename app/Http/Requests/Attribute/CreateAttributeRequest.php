@@ -26,7 +26,8 @@ class CreateAttributeRequest extends FormRequest
         return [
             'name' => 'required|string|max:30',
             'isRequired' => 'required|boolean',
-            'categoryId' => 'required|exists:categories,id'
+            'categoryId' => 'required|exists:categories,id',
+            'storeId' => 'required|exists:stores,id',
         ];
     }
 }

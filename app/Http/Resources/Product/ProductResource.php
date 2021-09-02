@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Product;
 
+use App\Models\Product;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
@@ -14,20 +15,21 @@ class ProductResource extends JsonResource
      */
     public function toArray($request)
     {
-        // return parent::toArray($request);
-
+        $product = new Product();
         return [
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
             'price' => $this->price,
             'quantity' => $this->quantity,
+
             //this is time for softDeleted()
             'deletedAt' => $this->deleted_at,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'categoryId' => $this->category_id,
             'storeId' => $this->store_id,
+            'photo' => $this->photo,
         ];
     }
 }

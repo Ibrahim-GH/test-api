@@ -45,11 +45,11 @@ class CheckAttributeValidation implements Rule
             if ($att->is_required == 1)
                 $array[] = $att;
         }
-        $countAtt = count($array);
+        $countAtts = count($array);
 
-        //validate if count attributes is_required in DB ==
-        // count attributes is_required in request->attributes array
-        if ($countAttributes == $countAtt){
+        //validate if count(attributes) is status is_required in DataBase equal
+        // count(attributes) is status is_required in request->attributes array
+        if ($countAttributes == $countAtts) {
             return true;
         }
 

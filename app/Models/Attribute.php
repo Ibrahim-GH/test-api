@@ -13,26 +13,21 @@ class Attribute extends Model
     protected $table = 'attributes';
 
     protected $fillable = [
-        'name', 'category_id','is_required',
+        'name', 'category_id', 'is_required',
     ];
 
-    //protected $casts = ['is_required' => 'boolean'];
     protected $hidden = [];
-
 
     ########################### The Relation for Attribute ###############################
 
-    //the category has many attribute and attribute belong to one category
     public function Category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
-    //the attribute has many parameter and parameter belong to one attribute
     public function Parameters()
     {
         return $this->hasMany(Parameter::class, 'attribute_id', 'id');
     }
-
 
 }

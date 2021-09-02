@@ -25,6 +25,7 @@ class UpdateParameterRequest extends FormRequest
     {
         return [
             'name' => 'string|max:30',
+            'storeId' => 'required|exists:stores,id',
         ];
     }
 }
