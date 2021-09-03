@@ -7,6 +7,7 @@ use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\Product\ProductResource;
 use App\Models\Product;
 use App\Models\ProductAttributeParameter;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -23,7 +24,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::paginate(10);
+        $perPage = request('perPage', 10);
+        $products = Product::paginate($perPage);
         return ProductResource::collection($products);
     }
 
@@ -36,19 +38,18 @@ class ProductController extends Controller
      */
     public function store(CreateProductRequest $request)
     {
-        $product = new Product();
-        $file_name = $this->saveImage($request->photo, 'Storages/Products');
+        $user = Auth::user();
+        if ($user->Store->id == $request->storeId) {
+            $product = new Product();
+            $file_name = $this->saveImage($request->photo, 'Storages/Products');
 
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->price = $request->price;
-        $product->quantity = $request->quantity;
-        $product->category_id = $request->categoryId;
-        $product->store_id = $request->storeId;
-        $product->photo = isset($file_name) ? '/Storages/Products/' . $file_name : null;
-
-        $userId = $product->Store->user_id;
-        if (auth()->id() == $userId) {
+            $product->name = $request->name;
+            $product->description = $request->description;
+            $product->price = $request->price;
+            $product->quantity = $request->quantity;
+            $product->category_id = $request->categoryId;
+            $product->store_id = $request->storeId;
+            $product->photo = isset($file_name) ? '/Storages/Products/' . $file_name : null;
 
             if ($product->save()) {
 
@@ -90,22 +91,22 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->price = $request->price;
-        $product->quantity = $request->quantity;
-
-        foreach ($request->attributess as $attribute) {
-            $productAttributeParameter = new ProductAttributeParameter();
-            $productAttributeParameter->product_id = $product->id;
-            $productAttributeParameter->attribute_id = $attribute['attributeId'];
-            $productAttributeParameter->parameter_id = $attribute['parameterId'];
-
-            $productAttributeParameter->save();
-        }
-
         $userId = $product->Store->user_id;
         if (auth()->id() == $userId) {
+
+            $product->name = $request->name;
+            $product->description = $request->description;
+            $product->price = $request->price;
+            $product->quantity = $request->quantity;
+
+            foreach ($request->attributess as $attribute) {
+                $productAttributeParameter = new ProductAttributeParameter();
+                $productAttributeParameter->product_id = $product->id;
+                $productAttributeParameter->attribute_id = $attribute['attributeId'];
+                $productAttributeParameter->parameter_id = $attribute['parameterId'];
+
+                $productAttributeParameter->save();
+            }
 
             if ($product->save()) {
                 return new ProductResource($product);
@@ -127,7 +128,6 @@ class ProductController extends Controller
     {
         $userId = $product->Store->user_id;
         if (auth()->id() == $userId) {
-
             if ($product->delete()) {
                 return new ProductResource($product);
             }
@@ -140,13 +140,12 @@ class ProductController extends Controller
     public function restore(Product $product)
     {
         $userId = $product->Store->user_id;
-        if (auth()->id() == $userId) {
-
-            $product->restore();
-        } else {
+        if (auth()->id() != $userId) {
             abort(400, 'the Auth user do not store owner');
+        } else {
+            $product->restore();
+            return new ProductResource($product);
         }
-        return new ProductResource($product);
     }
 
 

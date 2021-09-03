@@ -24,8 +24,8 @@ class StoreController extends Controller
      */
     public function index()
     {
-        //get retrieve stores records
-        $stores = Store::paginate(10);
+        $perPage = request('perPage', 10);
+        $stores = Store::paginate($perPage);
         return StoreResource::collection($stores);
     }
 
@@ -44,12 +44,8 @@ class StoreController extends Controller
         $store->phone_number = $request->phoneNumber;
         $store->user_id = $request->userId;
 
-        if (auth()->id() == $request->userId) {
-            if ($store->save()) {
-                return new StoreResource($store);
-            }
-        } else {
-            abort(400, 'the Auth user do not store owner ');
+        if ($store->save()) {
+            return new StoreResource($store);
         }
     }
 
@@ -62,7 +58,6 @@ class StoreController extends Controller
      */
     public function show(Store $store)
     {
-        //get specific store record with attributes are belongs its
         $store->load(['Categories']);
         return new StoreResource($store);
     }
@@ -70,7 +65,6 @@ class StoreController extends Controller
 
     public function ShowStoreProducts(Store $store)
     {
-        //get specific store record by id with Products are belongs its
         $store->load(['Products']);
         return new StoreResource($store);
     }
@@ -85,11 +79,11 @@ class StoreController extends Controller
      */
     public function update(UpdateStoreRequest $request, Store $store)
     {
-        $store->name = $request->name;
-        $store->address = $request->address;
-        $store->phone_number = $request->phoneNumber;
+        if (auth()->id() == $store->user_id) {
+            $store->name = $request->name;
+            $store->address = $request->address;
+            $store->phone_number = $request->phoneNumber;
 
-        if (auth()->id() == $request->userId) {
             if ($store->save()) {
                 return new StoreResource($store);
             }
@@ -107,27 +101,15 @@ class StoreController extends Controller
      */
     public function destroy(Store $store)
     {
-        //delete a store by softDelete
-        if (auth()->id() == $store->user_id) {
-
-            if ($store->delete()) {
-                return new StoreResource($store);
-            }
-
-        } else {
-            abort(400, 'the Auth user do not store owner ');
+        if ($store->delete()) {
+            return new StoreResource($store);
         }
     }
 
 
     public function restore(Store $store)
     {
-        if (auth()->id() == $store->user_id) {
-            $store->restore();
-            return new StoreResource($store);
-
-        } else {
-            abort(400, 'the Auth user do not store owner ');
-        }
+        $store->restore();
+        return new StoreResource($store);
     }
 }

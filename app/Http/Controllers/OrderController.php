@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PermissionName;
 use App\Http\Requests\Order\CreateOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\Order\OrderResource;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Store;
-use App\Models\User;
 use App\Notifications\SendToAdminNotification;
 use App\Notifications\SendToUserNotification;
+use http\Client\Curl\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 
 
@@ -29,15 +31,13 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //get retrieve orders records
-        $orders = Order::paginate(10);
-        foreach ($orders as $order) {
-            if ($order->user_id == auth()->id()) {
-                $array[] = $order;
-            }
-        }
+        $query = Order::query();
+        $query->where('user_id', Auth::id());
 
-        return OrderResource::collection($array);
+        $perPage = request('perPage', 10);
+        $orders = $query->paginate($perPage);
+
+        return OrderResource::collection($orders);
     }
 
 
@@ -49,20 +49,19 @@ class OrderController extends Controller
      */
     public function store(CreateOrderRequest $request)
     {
-        $order = new Order();
-        $order->order_number = $request->orderNumber;
-        $order->item_count = $request->itemCount;
-        $order->status = $request->status;
-        $order->note = $request->note;
-        $order->user_id = auth()->id();
+        $storeId = $request->storeId;
+        $store = Store::find($storeId);
 
-        $id = $request->storeId;
-        $store = Store::find($id);
-        $adminId = $store->user->id;
-        if (auth()->id() !== $adminId) {
+        //the store owner can not buy from his store
+        if (auth()->id() !== $store->user_id) {
+            $order = new Order();
+            $order->order_number = $request->orderNumber;
+            $order->item_count = $request->itemCount;
+            $order->status = $request->status;
+            $order->note = $request->note;
+            $order->user_id = auth()->id();
 
             if ($order->save()) {
-
                 foreach ($request->products as $item) {
                     $orderproduct = new OrderProduct();
                     $orderproduct->order_id = $order->id;
@@ -73,12 +72,10 @@ class OrderController extends Controller
                     $orderproduct->save();
                 }
 
-                $admin = User::find($adminId);
-                Notification::send($admin, new SendToAdminNotification($order));
+                Notification::send($store->User, new SendToAdminNotification($order));
 
                 return new OrderResource($order);
             }
-
         } else {
             abort(400, 'the store owner can not create order from his store');
         }
@@ -109,15 +106,13 @@ class OrderController extends Controller
     {
         $order->status = $request->status;
 
-        $id = $request->storeId;
-        $store = Store::find($id);
-        $adminId = $store->user->id;
-        if (auth()->id() == $adminId) {
-
+        $storeid = $request->storeId;
+        $store = Store::find($storeid);
+        //the store owner do make update on order status
+        if (auth()->id() == $store->user_id) {
             if ($order->save()) {
+                $user = $order->User;
 
-                $userId = $order->user_id;
-                $user = User::find($userId);
                 Notification::send($user, new SendToUserNotification($order));
 
                 return new OrderResource($order);
@@ -136,15 +131,10 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        $id = $order->store_id;
-        $sId = Store::find($id);
-        $admin = $sId->user->id;
-        if (auth()->id() == $admin) {
-
+        if (auth()->id() == $order->user_id) {
             if ($order->delete()) {
                 return new OrderResource($order);
             }
-
         } else {
             abort(400, 'the user can not delete this order');
         }
@@ -153,14 +143,13 @@ class OrderController extends Controller
 
     public function restore(Order $order)
     {
-        $id = $order->store_id;
-        $store = Store::find($id);
-        $admin = $store->user->id;
-        if (auth()->id() == $admin) {
+        $user = auth()->user();
+        if (($user->id == $order->user_id) ||
+            ($user->hasPermissionTo(PermissionName::RESTORE_ORDER))) {
 
             $order->restore();
-            return new OrderResource($order);
 
+            return new OrderResource($order);
         } else {
             abort(400, 'the user can not delete order');
         }

@@ -55,8 +55,6 @@ class AuthenticationController extends BaseController
     {
         auth()->user()->tokens()->delete();
 
-        return [
-            'message' => 'Tokens Revoked'
-        ];
+        return response()->noContent();
     }
 }

@@ -7,10 +7,9 @@ use App\Http\Requests\Parameter\CreateParameterRequest;
 use App\Http\Requests\Parameter\UpdateParameterRequest;
 use App\Http\Resources\Attribute\AttributeResource;
 use App\Http\Resources\Parameter\ParameterResource;
-use App\Models\Attribute;
-use App\Models\Category;
 use App\Models\Parameter;
-use App\Models\Store;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 
 class ParameterController extends Controller
@@ -28,7 +27,23 @@ class ParameterController extends Controller
      */
     public function index()
     {
-        $parameters = Parameter::paginate(10);
+        /**
+         * find store id and filter parameter based on that store id
+         */
+        /** @var User $user */
+        $user = Auth::user();
+        $storeId = $user->Store->id ?? null;
+        if ($storeId) {
+            $query = Parameter::query();
+            $query->select(['parameters.*'])
+                ->leftJoin('attributes', 'attribute_id', '=', 'parameters.attribute_id')
+                ->leftJoin('categories', 'categories.id', '=', 'attributes.category_id')
+                ->where('categories.store_id', $storeId);
+        }
+
+        $perPage = request('perPage', 10);
+        $parameters = $query->paginate($perPage);
+
         return ParameterResource::collection($parameters);
     }
 
@@ -45,7 +60,7 @@ class ParameterController extends Controller
         $parameter->name = $request->name;
         $parameter->attribute_id = $request->attributeId;
 
-        $userId =   $parameter->Attribute->Category->store->user_id;
+        $userId = $parameter->Attribute->Category->Store->user_id;
 
         if (auth()->id() == $userId) {
 
@@ -61,13 +76,19 @@ class ParameterController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\Category $category
+     * @param \App\Models\Parameter $parameter
      * @return ParameterResource
      */
-    public function show($id)
+    public function show(Parameter $parameter)
     {
-        $parameter = Parameter::findOrfail($id);
-        return new ParameterResource($parameter);
+        $userId = $parameter->Attribute->Category->Store->user_id;
+
+        // check if parameter belong to user
+        if (auth()->id() == $userId) {
+            return new ParameterResource($parameter);
+        } else {
+            abort(400, 'the Auth user do not store owner');
+        }
     }
 
 
@@ -78,13 +99,12 @@ class ParameterController extends Controller
      * @param $id
      * @return AttributeResource
      */
-    public function update(UpdateParameterRequest $request, $id)
+    public function update(UpdateParameterRequest $request, Parameter $parameter)
     {
-        $parameter = Parameter::findOrfail($id);
-        $parameter->name = $request->name;
+        $userId = $parameter->Attribute->Category->Store->user_id;
 
-        $userId =   $parameter->Attribute->Category->store->user_id;
         if (auth()->id() == $userId) {
+            $parameter->name = $request->name;
 
             if ($parameter->save()) {
                 return new ParameterResource($parameter);
@@ -98,16 +118,16 @@ class ParameterController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\Category $category
-     * @return AttributeResource
+     * @param Parameter $parameter
+     * @return ParameterResource
      */
-    public function destroy(Parameter $parameter)
+    public
+    function destroy(Parameter $parameter)
     {
-        //delete a parameter by softDelete .
-        $userId =   $parameter->Attribute->Category->store->user_id;
+        //delete a parameter by softDelete
+        $userId = $parameter->Attribute->Category->Store->user_id;
 
         if (auth()->id() == $userId) {
-
             if ($parameter->delete()) {
                 return new ParameterResource($parameter);
             }
@@ -119,8 +139,7 @@ class ParameterController extends Controller
 
     public function restore(Parameter $parameter)
     {
-
-        $userId =   $parameter->Attribute->Category->store->user_id;
+        $userId = $parameter->Attribute->Category->Store->user_id;
 
         if (auth()->id() == $userId) {
             $parameter->restore();

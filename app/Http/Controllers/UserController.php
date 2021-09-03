@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\PermissionName;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -13,24 +14,29 @@ class UserController extends Controller
      * @param User $user
      * @return \Illuminate\Http\Response
      */
-    public function index(User $superAdmin)
+    public function index()
     {
-        if ($superAdmin->hasPermissionTo(PermissionName::DELETE_USER)) {
+        $user = Auth::user();
+        if ($user->hasPermissionTo(PermissionName::SHOW_ALL_USERS)) {
             //get retrieve users records
+            dd(auth()->id());
             $users = User::paginate(10);
             return $users;
+        } else {
+            abort(400, 'you are not allowed to do this action.');
         }
     }
 
 
     public function destroy(User $user)
     {
-        // superAdmin is (id=1)  in database
-        $superAdmin = User::find(1);
-        if ($superAdmin->hasPermissionTo(PermissionName::DELETE_USER)) {
+        $authUser = Auth::user();
+        if ($authUser->hasPermissionTo(PermissionName::DELETE_USER)) {
             //delete a user by softDelete .
             $user->delete();
             return $user;
+        } else {
+            abort(400, 'you are not allowed to do this action.');
         }
     }
 
@@ -38,12 +44,13 @@ class UserController extends Controller
     public function restore(User $user)
     {
         // superAdmin is (id=1)  in database
-        $superAdmin = User::find(1);
-
+        $authUser = Auth::user();
         //retrieve this user data with norlam eloquent query
-        if ($superAdmin->hasPermissionTo(PermissionName::RESTORE_USER)) {
+        if ($authUser->hasPermissionTo(PermissionName::RESTORE_USER)) {
             $user->restore();
+            return $user;
+        } else {
+            abort(400, 'you are not allowed to do this action.');
         }
-        return $user;
     }
 }

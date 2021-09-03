@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller as Controller;
 
 class BaseController extends Controller
 {
-
     public function handleResponse($result, $msg)
     {
         $res = [

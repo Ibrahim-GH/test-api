@@ -21,7 +21,7 @@ class Product extends Model
 
     ########################### The Relation for Product ###############################
 
-    public function Stoer()
+    public function Store()
     {
         return $this->belongsTo(store::class, 'store_id', 'id');
     }

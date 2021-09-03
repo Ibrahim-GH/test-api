@@ -37,14 +37,14 @@ class RoleAndPermissionSeeder extends Seeder
             'delete-parameter', 'restore-parameter',
             'create-product', 'edit-product', 'show-all-products', 'show-product',
             'delete-product', 'restore-product',
-            'create-order', 'show-all-orders', 'show-order',
+            'create-order', 'show-all-orders', 'show-order','edit-order',
             'delete-order', 'restore-order',
         ];
 
         // create roles and assign created permissions
         // this can be done as separate statements
         $role1 = Role::create(['name' => 'super-admin']);
-        $role1->givePermissionTo('create-store', 'edit-store',
+        $role1->givePermissionTo('create-store', 'edit-store','show-all-users',
             'delete-store', 'restore-store', 'delete-user', 'restore-user');
         $role1->givePermissionTo($adminPermissions);
 
@@ -54,8 +54,8 @@ class RoleAndPermissionSeeder extends Seeder
         $role3 = Role::create(['name' => 'user']);
         $role3->givePermissionTo(
             [
-                'create-order', 'delete-order', 'show-order',
-                'show-all-orders', 'restore-order',
+                'create-order', 'delete-order',
+                'show-order', 'show-all-orders',
             ]);
     }
 }

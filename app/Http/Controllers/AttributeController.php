@@ -7,6 +7,8 @@ use App\Http\Requests\Attribute\CreateAttributeRequest;
 use App\Http\Requests\Attribute\UpdateAttributeRequest;
 use App\Http\Resources\Attribute\AttributeResource;
 use App\Models\Attribute;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 
 class AttributeController extends Controller
@@ -25,9 +27,24 @@ class AttributeController extends Controller
      */
     public function index()
     {
-        $attributes = Attribute::paginate(10);
-        return AttributeResource::collection($attributes);
+        $query = Attribute::query();
 
+        /**
+         * find store id and filter attribute based on that store id
+         */
+        /** @var User $user */
+        $user = Auth::user();
+        $storeId = $user->Store->id ?? null;
+        if ($storeId) {
+            $query->select(['attributes.*'])
+                ->leftJoin('categories', 'categories.id', '=', 'attributes.category_id')
+                ->where('categories.store_id', $storeId);
+        }
+
+        $perPage = request('perPage', 10);
+        $attributes = $query->paginate($perPage);
+
+        return AttributeResource::collection($attributes);
     }
 
 
@@ -39,17 +56,14 @@ class AttributeController extends Controller
      */
     public function store(CreateAttributeRequest $request)
     {
-
-        //Create a new attribute record
         $attribute = new Attribute();
         $attribute->name = $request->name;
         $attribute->is_required = $request->isRequired;
         $attribute->category_id = $request->categoryId;
 
-        $userId = $attribute->Category->store->user_id;
+        $userId = $attribute->Category->Store->user_id;
 
         if (auth()->id() == $userId) {
-
             if ($attribute->save()) {
                 return new AttributeResource($attribute);
             }
@@ -67,9 +81,15 @@ class AttributeController extends Controller
      */
     public function show(Attribute $attribute)
     {
-        //get specific Attribute record by id  with parameters are belongs its
-        $attribute->load('Parameters');
-        return new AttributeResource($attribute);
+        $userId = $attribute->Category->Store->user_id;
+
+        // check if attribute belong to user
+        if (auth()->id() == $userId) {
+            $attribute->load('Parameters');
+            return new AttributeResource($attribute);
+        } else {
+            abort(400, 'the Auth user do not store owner');
+        }
     }
 
 
@@ -82,12 +102,11 @@ class AttributeController extends Controller
      */
     public function update(UpdateAttributeRequest $request, Attribute $attribute)
     {
-        $attribute->name = $request->name;
-        $attribute->is_required = $request->isRequired;
-
         $userId = $attribute->Category->store->user_id;
-        if (auth()->id() == $userId) {
 
+        if (auth()->id() == $userId) {
+            $attribute->name = $request->name;
+            $attribute->is_required = $request->isRequired;
             if ($attribute->save()) {
                 return new AttributeResource($attribute);
             }
@@ -105,18 +124,16 @@ class AttributeController extends Controller
      */
     public function destroy(Attribute $attribute)
     {
-        //delete a attribute by softDelete .
-        $userId = $attribute->Category->store->user_id;
+        //delete a attribute by softDelete.
+        $userId = $attribute->Category->Store->user_id;
 
         if (auth()->id() == $userId) {
-
             if ($attribute->delete()) {
                 return new AttributeResource($attribute);
             }
         } else {
             abort(400, 'the Auth user do not store owner');
         }
-
     }
 
 
@@ -125,7 +142,6 @@ class AttributeController extends Controller
         $userId = $attribute->Category->store->user_id;
 
         if (auth()->id() == $userId) {
-
             $attribute->restore();
             return new AttributeResource($attribute);
         } else {

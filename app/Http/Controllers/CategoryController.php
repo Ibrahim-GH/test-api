@@ -6,7 +6,8 @@ use App\Http\Requests\Category\CreateCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Http\Resources\Category\CategoryResource;
 use App\Models\Category;
-use App\Models\Store;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -23,10 +24,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //get retrieve categories records
-        $categories = Category::paginate(10);
+        $perPage = request('perPage', 10);
+        $categories = Category::paginate($perPage);
         return CategoryResource::collection($categories);
-
     }
 
 
@@ -38,13 +38,12 @@ class CategoryController extends Controller
      */
     public function store(CreateCategoryRequest $request)
     {
-        $category = new Category();
-        $category->name = $request->name;
-        $category->store_id = $request->storeId;
+        $user = Auth::user();
+        if ($user->Store->id == $request->storeId) {
+            $category = new Category();
+            $category->name = $request->name;
+            $category->store_id = $request->storeId;
 
-        $store = Store::find($request->storeId);
-
-        if (auth()->id() == $store->user->id) {
             if ($category->save()) {
                 return new CategoryResource($category);
             }
@@ -62,7 +61,6 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //get specific category record by id with attributes are belongs its
         $category->load(['Attributes']);
         return new CategoryResource($category);
     }
@@ -70,7 +68,6 @@ class CategoryController extends Controller
 
     public function showCategoryProducts(Category $category)
     {
-        //get specific Category record by id with Products are belongs its
         $category->load(['Products']);
         return new CategoryResource($category);
     }
@@ -79,17 +76,16 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Category $category
+     * @param UpdateCategoryRequest $request
+     * @param Category $category
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $category->name = $request->name;
-
-        $store = Store::find($category->store_id);
-
-        if (auth()->id() == $store->user->id) {
+        /** @var User $user */
+        $user = Auth::user();
+        if ($user->Store->id == $category->store_id) {
+            $category->name = $request->name;
             if ($category->save()) {
                 return new CategoryResource($category);
             }
@@ -107,30 +103,26 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //delete a category by softDelete
-        $store = Store::find($category->store_id);
-
-        if (auth()->id() == $store->user->id) {
+        /** @var User $user */
+        $user = Auth::user();
+        if ($user->Store->id == $category->store_id) {
             if ($category->delete()) {
-
                 return new CategoryResource($category);
-
-            } else {
-                abort(400, 'the Auth user do not store owner ');
             }
-        }
-    }
-
-    public
-    function restore(Category $category)
-    {
-        $store = Store::find($category->store_id);
-
-        if (auth()->id() == $store->user->id) {
-            $category->restore();
         } else {
             abort(400, 'the Auth user do not store owner ');
         }
-        return new CategoryResource($category);
+    }
+
+    public function restore(Category $category)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        if ($user->Store->id != $category->store_id) {
+            abort(400, 'the Auth user do not store owner ');
+        } else {
+            $category->restore();
+            return new CategoryResource($category);
+        }
     }
 }

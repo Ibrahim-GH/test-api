@@ -33,7 +33,7 @@ class CheckAttributeValidation implements Rule
         $category = Category::find($this->categoryId);
 
         // get all attributes from database by categoryId
-        $attributes = $category->Attributes;
+        $attributes = $category->Attributes();
 
         $countAttributes = $attributes->where('is_required', 1)->count();
 

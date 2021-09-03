@@ -60,7 +60,7 @@ class OrderPolicy
     public function update(User $user, Order $order)
     {
         if ($user->hasPermissionTo(PermissionName::EDIT_ORDER))
-            return true;
+        return true;
     }
 
     /**

@@ -4,11 +4,6 @@ namespace App\Enums;
 
 use BenSampo\Enum\Enum;
 
-/**
- * @method static static OptionOne()
- * @method static static OptionTwo()
- * @method static static OptionThree()
- */
 final class PermissionName extends Enum
 {
     const CREATE_STORE = 'create-store';
@@ -52,6 +47,7 @@ final class PermissionName extends Enum
     const DELETE_ORDER = 'delete-order';
     const RESTORE_ORDER = 'restore-order';
 
+    const SHOW_ALL_USERS = 'show-all-users';
     const DELETE_USER = 'delete-user';
     const RESTORE_USER = 'restore-user';
 }

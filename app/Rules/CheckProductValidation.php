@@ -45,9 +45,8 @@ class CheckProductValidation implements Rule
 
                 return false;
             }
-
-            return true;
         }
+        return true;
     }
 
     /**
